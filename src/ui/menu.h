@@ -1,7 +1,8 @@
 #pragma once
 
 #include "ui/tabs/tab.h"
-#include "ui/tabs/sensors_tab.h"
+#include "ui/tabs/humidity_tab.h"
+#include "ui/tabs/temperature_tab.h"
 #include "ui/tabs/colors_tab.h"
 #include "ui/tabs/power_tab.h"
 #include "vector"
@@ -28,7 +29,8 @@ class Menu {
 		std::vector<Tab*> _tabs {};
 		int8_t _selectedIndex = -1;
 
-		SensorsTab _sensorsTab = SensorsTab();
+		TemperatureTab _temperatureTab = TemperatureTab();
+		HumidityTab _humidityTab = HumidityTab();
 		ColorsTab _colorsTab = ColorsTab();
 		PowerTab _powerTab = PowerTab();
 };

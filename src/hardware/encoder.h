@@ -18,8 +18,8 @@ class Encoder {
 			pinMode(_swPin, INPUT_PULLUP);
 			pinMode(_dtPin, INPUT_PULLUP);
 
-			attachInterrupt(digitalPinToInterrupt(_clkPin), std::bind(&onClkInterrupt, this), CHANGE);
-			attachInterrupt(digitalPinToInterrupt(_dtPin), std::bind(&onDtInterrupt, this), CHANGE);
+			attachInterrupt(digitalPinToInterrupt(_clkPin), std::bind(&onClkOrDtInterrupt, this), CHANGE);
+			attachInterrupt(digitalPinToInterrupt(_dtPin), std::bind(&onClkOrDtInterrupt, this), CHANGE);
 			attachInterrupt(digitalPinToInterrupt(_swPin), std::bind(&onSwInterrupt, this), CHANGE);
 
 			// Updating initial values
@@ -27,12 +27,7 @@ class Encoder {
 			_oldClkAndDt = readClkAndDt();
 		}
 
-		static void onClkInterrupt(Encoder* encoder) {
-			encoder->readRotation();
-			encoder->_interrupted = true;
-		}
-
-		static void onDtInterrupt(Encoder* encoder) {
+		static void onClkOrDtInterrupt(Encoder* encoder) {
 			encoder->readRotation();
 			encoder->_interrupted = true;
 		}

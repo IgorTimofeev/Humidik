@@ -15,7 +15,8 @@ class Application {
 			return &_display;
 		}
 
-		Encoder& getEncoder();
+		Encoder* getEncoder();
+
 	private:
 		Encoder _encoder = Encoder(22, 4, 21);
 		Menu _menu = Menu();

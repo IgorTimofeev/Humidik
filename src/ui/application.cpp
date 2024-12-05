@@ -3,6 +3,11 @@
 void Application::setup() {
 	SPI.begin();
 
+	// Pins
+	pinMode(32, INPUT_PULLUP);
+	pinMode(33, INPUT_PULLUP);
+	pinMode(34, INPUT_PULLUP);
+
 	// Encoder
 	_encoder.setup();
 
@@ -20,6 +25,6 @@ void Application::tick() {
 	_menu.tick(this);
 }
 
-Encoder& Application::getEncoder() {
-	return _encoder;
+Encoder* Application::getEncoder() {
+	return &_encoder;
 }

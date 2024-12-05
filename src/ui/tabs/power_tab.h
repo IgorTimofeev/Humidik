@@ -4,7 +4,7 @@
 
 class PowerTab : public Tab {
 	public:
-		PowerTab() : Tab("Power") {
+		PowerTab();
 
-		}
+		void render(Application* app) override;
 };

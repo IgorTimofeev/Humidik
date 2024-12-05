@@ -8,9 +8,9 @@ class Tab {
 
 		void setup();
 
-		void tick(Application* app);
+		virtual void tick(Application* app);
 
-		void render(Application* app);
+		virtual void render(Application* app) = 0;
 
 		virtual void onRotate() {
 

@@ -4,7 +4,7 @@
 
 class ColorsTab : public Tab {
 	public:
-		ColorsTab() : Tab("Colors") {
+		ColorsTab();
 
-		}
+		void render(Application* app) override;
 };
