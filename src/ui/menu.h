@@ -8,13 +8,13 @@
 #include "vector"
 #include <cstdint>
 
-class Application;
+class HumidifierApplication;
 
 class Menu {
 	public:
 		void setup();
 
-		void tick(Application* app);
+		void tick(HumidifierApplication* app);
 
 		int8_t getSelectedIndex() const;
 		void setSelectedIndex(int8_t value);

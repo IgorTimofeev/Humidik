@@ -1,5 +1,5 @@
 #include "tab.h"
-#include "ui/application.h"
+#include "ui/humidifier_application.h"
 
 Tab::Tab(const char* name) : _name(name) {
 
@@ -9,7 +9,7 @@ void Tab::setup() {
 
 }
 
-void Tab::tick(Application* app) {
+void Tab::tick(HumidifierApplication* app) {
 
 }
 

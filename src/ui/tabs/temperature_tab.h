@@ -10,7 +10,7 @@ class TemperatureTab : public ValueAndSuffixTab {
 			strcpy(suffix, "deg");
 		}
 
-		void tick(Application* app) override {
+		void tick(HumidifierApplication* app) override {
 			uint16_t temperature = 24;
 
 			snprintf(value, sizeof(value), "%d", temperature);

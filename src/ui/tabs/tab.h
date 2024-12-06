@@ -1,6 +1,6 @@
 #pragma once
 
-class Application;
+class HumidifierApplication;
 
 class Tab {
 	public:
@@ -8,9 +8,9 @@ class Tab {
 
 		void setup();
 
-		virtual void tick(Application* app);
+		virtual void tick(HumidifierApplication* app);
 
-		virtual void render(Application* app) = 0;
+		virtual void render(HumidifierApplication* app) = 0;
 
 		virtual void onRotate() {
 

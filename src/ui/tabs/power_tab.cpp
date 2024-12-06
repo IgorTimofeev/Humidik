@@ -4,6 +4,6 @@ PowerTab::PowerTab() : Tab("Power") {
 
 }
 
-void PowerTab::render(Application* app) {
+void PowerTab::render(HumidifierApplication* app) {
 
 }

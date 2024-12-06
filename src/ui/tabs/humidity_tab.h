@@ -10,7 +10,7 @@ class HumidityTab : public ValueAndSuffixTab {
 			strcpy(suffix, "%");
 		}
 
-		void tick(Application* app) override {
+		void tick(HumidifierApplication* app) override {
 			uint16_t humidity = 60;
 
 			snprintf(value, sizeof(value), "%d", humidity);

@@ -6,5 +6,5 @@ class PowerTab : public Tab {
 	public:
 		PowerTab();
 
-		void render(Application* app) override;
+		void render(HumidifierApplication* app) override;
 };

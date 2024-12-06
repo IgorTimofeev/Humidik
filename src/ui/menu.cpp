@@ -1,5 +1,5 @@
 #include "menu.h"
-#include "application.h"
+#include "humidifier_application.h"
 
 void Menu::setup() {
 	addTab(&_temperatureTab);
@@ -10,7 +10,7 @@ void Menu::setup() {
 	_selectedIndex = 0;
 }
 
-void Menu::tick(Application* app) {
+void Menu::tick(HumidifierApplication* app) {
 	auto display = app->getDisplay();
 	auto encoder = app->getEncoder();
 

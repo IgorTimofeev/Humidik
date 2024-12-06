@@ -1,6 +1,6 @@
-#include "application.h"
+#include "humidifier_application.h"
 
-void Application::setup() {
+void HumidifierApplication::setup() {
 	SPI.begin();
 
 	// Pins
@@ -21,10 +21,10 @@ void Application::setup() {
 	_menu.setup();
 }
 
-void Application::tick() {
+void HumidifierApplication::tick() {
 	_menu.tick(this);
 }
 
-Encoder* Application::getEncoder() {
+Encoder* HumidifierApplication::getEncoder() {
 	return &_encoder;
 }

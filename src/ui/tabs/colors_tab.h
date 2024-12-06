@@ -6,5 +6,5 @@ class ColorsTab : public Tab {
 	public:
 		ColorsTab();
 
-		void render(Application* app) override;
+		void render(HumidifierApplication* app) override;
 };

@@ -4,8 +4,9 @@
 #include "../hardware/encoder.h"
 #include "menu.h"
 #include "U8g2lib.h"
+#include "../settings.h"
 
-class Application {
+class HumidifierApplication {
 	public:
 		void setup();
 
@@ -18,7 +19,12 @@ class Application {
 		Encoder* getEncoder();
 
 	private:
-		Encoder _encoder = Encoder(22, 4, 21);
+		Encoder _encoder = Encoder(
+			settings::pinout::encoder::clk,
+			settings::pinout::encoder::dt,
+			settings::pinout::encoder::sw
+		);
+
 		Menu _menu = Menu();
 
 		U8G2_SH1106_128X64_NONAME_F_4W_HW_SPI _display = U8G2_SH1106_128X64_NONAME_F_4W_HW_SPI(

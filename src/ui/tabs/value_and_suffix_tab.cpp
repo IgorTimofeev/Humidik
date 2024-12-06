@@ -1,11 +1,11 @@
 #include "value_and_suffix_tab.h"
-#include "ui/application.h"
+#include "ui/humidifier_application.h"
 
 ValueAndSuffixTab::ValueAndSuffixTab(const char* name) : Tab(name) {
 
 }
 
-void ValueAndSuffixTab::render(Application* app) {
+void ValueAndSuffixTab::render(HumidifierApplication* app) {
 	auto display = app->getDisplay();
 
 	display->setFont(u8g2_font_logisoso22_tf);

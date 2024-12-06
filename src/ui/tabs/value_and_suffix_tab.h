@@ -6,7 +6,7 @@ class ValueAndSuffixTab : public Tab {
 	public:
 		explicit ValueAndSuffixTab(const char* name);
 
-		void render(Application* app) override;
+		void render(HumidifierApplication* app) override;
 
 	protected:
 		char value[64] {};
