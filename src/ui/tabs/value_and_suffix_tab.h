@@ -9,6 +9,6 @@ class ValueAndSuffixTab : public Tab {
 		void render(Application* app) override;
 
 	protected:
-		char value[64];
-		char suffix[12];
+		char value[64] {};
+		char suffix[12] {};
 };
