@@ -1,33 +1,24 @@
 #include "value_and_suffix_tab.h"
 #include "ui/humidifier_application.h"
 
-ValueAndSuffixTab::ValueAndSuffixTab(const char* name) : Tab(name) {
+ValueAndSuffixTab::ValueAndSuffixTab(const wchar_t* name) : Tab(name) {
 
 }
 
 void ValueAndSuffixTab::render(HumidifierApplication* app) {
 	auto display = app->getDisplay();
 
-	display->setFont(u8g2_font_logisoso22_tf);
-	display->setFontPosTop();
+	auto textSize = Theme::fontBig.getSize(value);
 
-	uint16_t textWidth = display->getStrWidth(value);
-	uint16_t textHeight = display->getAscent() - display->getDescent();
+	int32_t x = display->getDriver()->getResolution().getWidth() / 2 - textSize.getWidth() / 2;
+	int32_t y = display->getDriver()->getResolution().getHeight() / 2 - textSize.getHeight() / 2;
 
-	int32_t x = display->getWidth() / 2 - textWidth / 2;
-	int32_t y = display->getHeight() / 2 - textHeight / 2;
+	display->renderText(Point(x, y), &Theme::fontBig, &Theme::black, value);
 
-	display->drawStr(x, y, value);
+	x += textSize.getWidth() + 3;
+	y += textSize.getHeight();
 
-	display->setFont(u8g2_font_6x10_tf);
-	display->setFontPosTop();
+	y = y - Theme::fontSmall.getHeight();
 
-	x += textWidth + 3;
-	y += textHeight;
-
-	textHeight = display->getAscent() - display->getDescent();
-
-	y = y - textHeight - 4;
-
-	display->drawStr(x, y, suffix);
+	display->renderText(Point(x, y), &Theme::fontSmall, &Theme::black, suffix);
 }

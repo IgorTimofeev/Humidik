@@ -1,6 +1,6 @@
 #include "power_tab.h"
 
-PowerTab::PowerTab() : Tab("Power") {
+PowerTab::PowerTab() : Tab(L"Power") {
 
 }
 

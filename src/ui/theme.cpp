@@ -1,6 +1,7 @@
 #include "theme.h"
 
-const MonochromeColor Theme::color1 = MonochromeColor(true);
-const MonochromeColor Theme::color2 = MonochromeColor(false);
+const MonochromeColor Theme::black = MonochromeColor(false);
+const MonochromeColor Theme::white = MonochromeColor(true);
 
-const PIXY10Font Theme::font = PIXY10Font();
+const PIXY10Font Theme::fontSmall = PIXY10Font();
+const Unscii16Font Theme::fontBig = Unscii16Font();

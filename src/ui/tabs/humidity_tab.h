@@ -3,16 +3,17 @@
 #include "value_and_suffix_tab.h"
 #include <cstring>
 #include <cstdio>
+#include <cwchar>
 
 class HumidityTab : public ValueAndSuffixTab {
 	public:
-		HumidityTab() : ValueAndSuffixTab("Humidity") {
-			strcpy(suffix, "%");
+		HumidityTab() : ValueAndSuffixTab(L"Humidity") {
+			wcscpy(suffix, L"%");
 		}
 
 		void tick(HumidifierApplication* app) override {
 			uint16_t humidity = 60;
 
-			snprintf(value, sizeof(value), "%d", humidity);
+			swprintf(value, sizeof(value), L"%d", humidity);
 		}
 };

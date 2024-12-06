@@ -1,7 +1,7 @@
 #include "colors_tab.h"
 #include "ui/humidifier_application.h"
 
-ColorsTab::ColorsTab() : Tab("Colors") {
+ColorsTab::ColorsTab() : Tab(L"Colors") {
 
 }
 

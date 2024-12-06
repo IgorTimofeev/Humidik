@@ -2,9 +2,13 @@
 
 #include <SPI.h>
 #include "../hardware/encoder.h"
-#include "menu.h"
-#include "U8g2lib.h"
+#include "../../lib/YOBA/src/hardware/screen/drivers/SH1106Driver.h"
+#include "../../lib/YOBA/src/hardware/screen/buffers/monochromeBuffer.h"
 #include "../settings.h"
+#include "theme.h"
+#include "menu.h"
+
+using namespace yoba;
 
 class HumidifierApplication {
 	public:
@@ -12,9 +16,7 @@ class HumidifierApplication {
 
 		void tick();
 
-		U8G2_SH1106_128X64_NONAME_F_4W_HW_SPI* getDisplay() {
-			return &_display;
-		}
+		MonochromeBuffer* getDisplay();
 
 		Encoder* getEncoder();
 
@@ -27,10 +29,11 @@ class HumidifierApplication {
 
 		Menu _menu = Menu();
 
-		U8G2_SH1106_128X64_NONAME_F_4W_HW_SPI _display = U8G2_SH1106_128X64_NONAME_F_4W_HW_SPI(
-			U8G2_R0,
-			5,
-			17,
-			16
+		SH1106Driver screenDriver = SH1106Driver(
+			settings::pinout::screen::chipSelect,
+			settings::pinout::screen::dataCommand,
+			settings::pinout::screen::reset
 		);
+
+		MonochromeBuffer _display = MonochromeBuffer(&screenDriver);
 };

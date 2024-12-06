@@ -4,11 +4,11 @@
 
 class ValueAndSuffixTab : public Tab {
 	public:
-		explicit ValueAndSuffixTab(const char* name);
+		explicit ValueAndSuffixTab(const wchar_t* name);
 
 		void render(HumidifierApplication* app) override;
 
 	protected:
-		char value[64] {};
-		char suffix[12] {};
+		wchar_t value[64] {};
+		wchar_t suffix[12] {};
 };

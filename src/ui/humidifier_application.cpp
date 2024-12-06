@@ -12,10 +12,7 @@ void HumidifierApplication::setup() {
 	_encoder.setup();
 
 	// Display
-	_display.begin();
-	_display.setFont(u8g2_font_logisoso20_tf);
-	_display.clearBuffer();
-	_display.sendBuffer();
+	_display.setup();
 
 	// Menu
 	_menu.setup();
@@ -27,4 +24,8 @@ void HumidifierApplication::tick() {
 
 Encoder* HumidifierApplication::getEncoder() {
 	return &_encoder;
+}
+
+MonochromeBuffer* HumidifierApplication::getDisplay() {
+	return &_display;
 }

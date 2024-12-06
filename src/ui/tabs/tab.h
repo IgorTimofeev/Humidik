@@ -4,7 +4,7 @@ class HumidifierApplication;
 
 class Tab {
 	public:
-		explicit Tab(const char* name);
+		explicit Tab(const wchar_t* name);
 
 		void setup();
 
@@ -20,8 +20,8 @@ class Tab {
 
 		}
 
-		const char* getName() const;
+		const wchar_t* getName() const;
 
 	private:
-		const char* _name;
+		const wchar_t* _name;
 };

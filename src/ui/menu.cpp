@@ -30,25 +30,15 @@ void Menu::tick(HumidifierApplication* app) {
 	auto selectedTab = getSelectedTab();
 
 	// Clearing display
-	display->clearBuffer();
-	display->setDrawColor(1);
-	display->drawBox(0, 0, display->getWidth(), display->getHeight());
+	display->clear(&Theme::white);
 
 	if (selectedTab) {
-		// Drawing nav bar
-		display->setDrawColor(0);
+		const auto textSize = Theme::fontSmall.getSize(selectedTab->getName());
 
-		// Tab name
-		display->setFont(u8g2_font_t0_11b_tf);
-		display->setFontPosTop();
-
-		const auto textWidth = display->getStrWidth(selectedTab->getName());
-		const auto textHeight = display->getAscent() - display->getDescent();
-
-		int32_t textX = display->getWidth() / 2 - textWidth / 2;
+		int32_t textX = display->getDriver()->getResolution().getWidth() / 2 - textSize.getWidth() / 2;
 		int32_t textY = 2;
 
-		display->drawStr(textX, textY, selectedTab->getName());
+		display->renderText(Point(textX, textY), &Theme::fontSmall, &Theme::black, selectedTab->getName());
 
 		// Dots
 		const uint8_t dotSize = 2;
@@ -56,19 +46,19 @@ void Menu::tick(HumidifierApplication* app) {
 		const uint8_t dotOffset = 5;
 
 		int32_t x = textX - dotOffset;
-		int32_t y = textY + textHeight / 2;
+		int32_t y = textY + textSize.getHeight() / 2;
 
 		// Left dots
 		for (int32_t i = _selectedIndex - 1; i >= 0; i--) {
-			display->drawBox(x - dotSpacing, y, dotSize, dotSize);
+			display->renderRectangle(Bounds(x - dotSpacing, y, dotSize, dotSize), &Theme::black);
 			x = x - dotSize - dotSpacing;
 		}
 
 		// Right dots
-		x = textX + textWidth + dotOffset;
+		x = textX + textSize.getWidth() + dotOffset;
 
 		for (int32_t i = _selectedIndex + 1; i < _tabs.size(); i++) {
-			display->drawBox(x, y, dotSize, dotSize);
+			display->renderRectangle(Bounds(x, y, dotSize, dotSize), &Theme::black);
 			x = x + dotSize + dotSpacing;
 		}
 
@@ -76,7 +66,7 @@ void Menu::tick(HumidifierApplication* app) {
 		selectedTab->render(app);
 	}
 
-	display->sendBuffer();
+	display->flush();
 }
 
 int8_t Menu::getSelectedIndex() const {
