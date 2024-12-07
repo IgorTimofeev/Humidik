@@ -1,4 +1,4 @@
-#include "humidifier_application.h"
+#include "humidifierApplication.h"
 
 void HumidifierApplication::setup() {
 	SPI.begin();
@@ -12,7 +12,7 @@ void HumidifierApplication::setup() {
 	_encoder.setup();
 
 	// Display
-	_display.setup();
+	_screenBuffer.setup();
 
 	// Menu
 	_menu.setup();
@@ -26,6 +26,10 @@ Encoder* HumidifierApplication::getEncoder() {
 	return &_encoder;
 }
 
-MonochromeBuffer* HumidifierApplication::getDisplay() {
-	return &_display;
+MonochromeBuffer* HumidifierApplication::getScreenBuffer() {
+	return &_screenBuffer;
+}
+
+SH1106Driver* HumidifierApplication::getScreenDriver() {
+	return &_screenDriver;
 }

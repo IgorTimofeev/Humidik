@@ -1,5 +1,7 @@
 #pragma once
 
+#include <cstdint>
+
 class HumidifierApplication;
 
 class Tab {
@@ -12,16 +14,20 @@ class Tab {
 
 		virtual void render(HumidifierApplication* app) = 0;
 
-		virtual void onRotate() {
-
-		}
-
-		virtual void onPress() {
-
-		}
+		virtual void onRotate(HumidifierApplication* app);
 
 		const wchar_t* getName() const;
 
+		bool isSelected() const;
+		void setSelected(bool value);
+
+		bool isSelectable() const;
+
+		void setSelectable(bool selectable);
+
 	private:
 		const wchar_t* _name;
+		bool _active = false;
+		bool _selected = true;
+		bool _selectable = true;
 };

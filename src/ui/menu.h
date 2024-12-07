@@ -1,10 +1,13 @@
 #pragma once
 
 #include "ui/tabs/tab.h"
-#include "ui/tabs/humidity_tab.h"
-#include "ui/tabs/temperature_tab.h"
-#include "ui/tabs/colors_tab.h"
-#include "ui/tabs/power_tab.h"
+#include "ui/tabs/humidityTab.h"
+#include "ui/tabs/temperatureTab.h"
+#include "ui/tabs/colorTabs.h"
+#include "ui/tabs/fanTab.h"
+#include "ui/tabs/emitterTab.h"
+#include "ui/tabs/contrastTab.h"
+#include "ui/tabs/inversionTab.h"
 #include "vector"
 #include <cstdint>
 
@@ -16,21 +19,24 @@ class Menu {
 
 		void tick(HumidifierApplication* app);
 
-		int8_t getSelectedIndex() const;
-		void setSelectedIndex(int8_t value);
+		uint8_t getSelectedIndex() const;
+		void setSelectedIndex(uint8_t value);
 
 		Tab* getSelectedTab();
-
-		void addTab(Tab* tab) {
-			_tabs.push_back(tab);
-		}
+		void addTab(Tab* tab);
 
 	private:
 		std::vector<Tab*> _tabs {};
-		int8_t _selectedIndex = -1;
+		uint8_t _selectedIndex = 0;
+		bool _oldPressed = false;
 
 		TemperatureTab _temperatureTab = TemperatureTab();
 		HumidityTab _humidityTab = HumidityTab();
-		ColorsTab _colorsTab = ColorsTab();
-		PowerTab _powerTab = PowerTab();
+		HueTab _hueTab = HueTab();
+		SaturationTab _saturationTab = SaturationTab();
+		BrightnessTab _brightnessTab = BrightnessTab();
+		FanTab _fanTab = FanTab();
+		EmitterTab _emitterTab = EmitterTab();
+		ContrastTab _contrastTab = ContrastTab();
+		InversionTab _inversionTab = InversionTab();
 };

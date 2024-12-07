@@ -5,7 +5,7 @@
 #include "../lib/YOBA/src/hardware/screen/buffers/monochromeBuffer.h"
 #include <Adafruit_GFX.h>
 #include <SH1106.h>
-#include "ui/humidifier_application.h"
+#include "ui/humidifierApplication.h"
 
 HumidifierApplication application = HumidifierApplication();
 

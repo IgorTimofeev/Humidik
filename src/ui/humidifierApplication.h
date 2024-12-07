@@ -16,7 +16,8 @@ class HumidifierApplication {
 
 		void tick();
 
-		MonochromeBuffer* getDisplay();
+		SH1106Driver* getScreenDriver();
+		MonochromeBuffer* getScreenBuffer();
 
 		Encoder* getEncoder();
 
@@ -29,11 +30,11 @@ class HumidifierApplication {
 
 		Menu _menu = Menu();
 
-		SH1106Driver screenDriver = SH1106Driver(
+		SH1106Driver _screenDriver = SH1106Driver(
 			settings::pinout::screen::chipSelect,
 			settings::pinout::screen::dataCommand,
 			settings::pinout::screen::reset
 		);
 
-		MonochromeBuffer _display = MonochromeBuffer(&screenDriver);
+		MonochromeBuffer _screenBuffer = MonochromeBuffer(&_screenDriver);
 };

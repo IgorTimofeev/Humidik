@@ -1,14 +1,16 @@
 #pragma once
 
-#include "value_and_suffix_tab.h"
+#include "valueAndSuffixTab.h"
 #include <cstring>
 #include <cstdio>
 #include <cwchar>
 
 class HumidityTab : public ValueAndSuffixTab {
 	public:
-		HumidityTab() : ValueAndSuffixTab(L"Humidity") {
+		HumidityTab() : ValueAndSuffixTab(L"HMDT") {
 			wcscpy(suffix, L"%");
+
+			setSelectable(false);
 		}
 
 		void tick(HumidifierApplication* app) override {

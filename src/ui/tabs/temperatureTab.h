@@ -1,14 +1,16 @@
 #pragma once
 
-#include "value_and_suffix_tab.h"
+#include "valueAndSuffixTab.h"
 #include <cstring>
 #include <cstdio>
 #include <cwchar>
 
 class TemperatureTab : public ValueAndSuffixTab {
 	public:
-		TemperatureTab() : ValueAndSuffixTab(L"Temperature") {
+		TemperatureTab() : ValueAndSuffixTab(L"TEMP") {
 			wcscpy(suffix, L"°C");
+
+			setSelectable(false);
 		}
 
 		void tick(HumidifierApplication* app) override {
