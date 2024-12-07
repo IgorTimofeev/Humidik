@@ -35,7 +35,7 @@ void Menu::tick(HumidifierApplication* app) {
 	if (selectedTab) {
 		const auto textSize = Theme::fontSmall.getSize(selectedTab->getName());
 
-		int32_t textX = display->getDriver()->getResolution().getWidth() / 2 - textSize.getWidth() / 2;
+		int32_t textX = display->getSize().getWidth() / 2 - textSize.getWidth() / 2;
 		int32_t textY = 2;
 
 		display->renderText(Point(textX, textY), &Theme::fontSmall, &Theme::black, selectedTab->getName());

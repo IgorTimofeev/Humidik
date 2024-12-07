@@ -10,8 +10,8 @@ void ValueAndSuffixTab::render(HumidifierApplication* app) {
 
 	auto textSize = Theme::fontBig.getSize(value);
 
-	int32_t x = display->getDriver()->getResolution().getWidth() / 2 - textSize.getWidth() / 2;
-	int32_t y = display->getDriver()->getResolution().getHeight() / 2 - textSize.getHeight() / 2;
+	int32_t x = display->getSize().getWidth() / 2 - textSize.getWidth() / 2;
+	int32_t y = display->getSize().getHeight() / 2 - textSize.getHeight() / 2;
 
 	display->renderText(Point(x, y), &Theme::fontBig, &Theme::black, value);
 

@@ -8,7 +8,7 @@
 class TemperatureTab : public ValueAndSuffixTab {
 	public:
 		TemperatureTab() : ValueAndSuffixTab(L"Temperature") {
-			wcscpy(suffix, L"deg");
+			wcscpy(suffix, L"°C");
 		}
 
 		void tick(HumidifierApplication* app) override {
