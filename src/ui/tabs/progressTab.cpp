@@ -10,7 +10,7 @@ void ProgressTab::render(HumidifierApplication* app) {
 	auto screenBuffer = app->getScreenBuffer();
 
 	const auto& bufferSize = screenBuffer->getSize();
-	const auto& size = Size(80, 7);
+	const auto& size = Size(80, 5);
 
 	const auto& bounds = Bounds(
 		Point(
