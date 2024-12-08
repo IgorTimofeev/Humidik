@@ -8,6 +8,8 @@ class Tab {
 	public:
 		explicit Tab(const wchar_t* name);
 
+		virtual ~Tab() = default;
+
 		virtual void setup();
 		virtual void tick();
 		virtual void onRotate();

@@ -53,7 +53,7 @@ class Config {
 		}
 
 		void enqueueWrite() {
-			_enqueuedWriteDeadline = millis() + 1000;
+			_enqueuedWriteDeadline = millis() + 3000;
 		}
 
 		void tick() {

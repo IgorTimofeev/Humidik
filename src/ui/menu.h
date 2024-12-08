@@ -21,10 +21,19 @@ class Menu {
 		void tick();
 
 	private:
-//		std::function<Tab*()> govnomassiv[1] {
-//			[]() { return new ContrastTab(); }
-//		};
+		std::array<std::function<Tab*()>, 9> _tabs {
+			[]() { return new HumidityTab(); },
+			[]() { return new TemperatureTab(); },
+			[]() { return new HueTab(); },
+			[]() { return new SaturationTab(); },
+			[]() { return new BrightnessTab(); },
+			[]() { return new FanTab(); },
+			[]() { return new EmitterTab(); },
+			[]() { return new ContrastTab(); },
+			[]() { return new InversionTab(); }
+		};
 
-		std::vector<Tab*> _tabs {};
 		bool _oldPressed = false;
+		Tab* _selectedTab = nullptr;
+		void switchTab();
 };

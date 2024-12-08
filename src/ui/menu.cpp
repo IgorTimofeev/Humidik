@@ -1,28 +1,23 @@
 #include "menu.h"
 #include "app.h"
 #include "../../lib/YOBA/src/number.h"
+#include "array"
 
 void Menu::setup() {
-	const auto& addTab = [&](Tab* tab) {
-		tab->setup();
-		_tabs.push_back(tab);
-	};
+	switchTab();
+}
 
-	addTab(new HumidityTab());
-	addTab(new TemperatureTab());
-	addTab(new HueTab());
-	addTab(new SaturationTab());
-	addTab(new BrightnessTab());
-	addTab(new FanTab());
-	addTab(new EmitterTab());
-	addTab(new ContrastTab());
-	addTab(new InversionTab());
+void Menu::switchTab() {
+	auto& app = App::getInstance();
+
+	delete _selectedTab;
+
+	_selectedTab = _tabs[app.config.ui.tabIndex]();
+	_selectedTab->setup();
 }
 
 void Menu::tick() {
 	auto& app = App::getInstance();
-
-	auto selectedTab = _tabs[app.config.ui.tabIndex];
 
 	// Pressing check
 	if (app.encoder.getRotation() == 0) {
@@ -30,7 +25,7 @@ void Menu::tick() {
 		_oldPressed = app.encoder.isPressed();
 
 		// Toggling tab active state on encoder press
-		if (pressedChanged && app.encoder.isPressed() && selectedTab->isFocusable()) {
+		if (pressedChanged && app.encoder.isPressed() && _selectedTab->isFocusable()) {
 			app.config.ui.focused = !app.config.ui.focused;
 
 			app.config.enqueueWrite();
@@ -40,7 +35,7 @@ void Menu::tick() {
 	else {
 		// Using tab rotate
 		if (app.config.ui.focused) {
-			selectedTab->onRotate();
+			_selectedTab->onRotate();
 		}
 		// Cycling between tabs
 		else {
@@ -51,7 +46,7 @@ void Menu::tick() {
 					(int8_t) (_tabs.size() - 1)
 				);
 
-				selectedTab = _tabs[app.config.ui.tabIndex];
+				switchTab();
 
 				app.encoder.setRotation(0);
 
@@ -63,7 +58,7 @@ void Menu::tick() {
 	// Tab rendering
 	app.screenBuffer.clear(&Theme::white);
 
-	const auto textSize = Theme::fontSmall.getSize(selectedTab->getName());
+	const auto textSize = Theme::fontSmall.getSize(_selectedTab->getName());
 
 	int32_t textX = app.screenBuffer.getSize().getWidth() / 2 - textSize.getWidth() / 2;
 	int32_t textY = 2;
@@ -87,7 +82,7 @@ void Menu::tick() {
 		Point(textX, textY),
 		&Theme::fontSmall,
 		app.config.ui.focused ? &Theme::white : &Theme::black,
-		selectedTab->getName()
+		_selectedTab->getName()
 	);
 
 	// Dots
@@ -112,8 +107,8 @@ void Menu::tick() {
 		x = x + dotSize + dotSpacing;
 	}
 
-	selectedTab->tick();
-	selectedTab->render();
+	_selectedTab->tick();
+	_selectedTab->render();
 
 	app.screenBuffer.flush();
 }
