@@ -7,5 +7,5 @@ class EmitterTab : public ProgressTab {
 	public:
 		explicit EmitterTab();
 
-		void onRotate(HumidifierApplication* app) override;
+		void onValueChanged(HumidifierApplication* app) override;
 };

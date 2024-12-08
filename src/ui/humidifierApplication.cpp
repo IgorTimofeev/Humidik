@@ -8,6 +8,14 @@ void HumidifierApplication::setup() {
 	pinMode(33, INPUT_PULLUP);
 	pinMode(34, INPUT_PULLUP);
 
+	// Fan
+	pinMode(settings::pinout::fan, OUTPUT);
+	analogWriteFrequency(5000);
+	analogWriteResolution(8);
+
+//	ledcSetup(0, 312500, 8);
+//	ledcAttachPin(settings::pinout::fan, 0);
+
 	// Encoder
 	_encoder.setup();
 

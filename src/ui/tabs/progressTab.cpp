@@ -28,8 +28,8 @@ void ProgressTab::render(HumidifierApplication* app) {
 	);
 
 	// Text
-	wchar_t textBuffer[5];
-	swprintf(textBuffer, 5, L"%.0f%", _value * 100);
+	wchar_t textBuffer[4];
+	swprintf(textBuffer, 4, L"%.0f%", _value * 100);
 	screenBuffer->renderText(
 		Point(
 			bounds.getXCenter() - Theme::fontSmall.getWidth(textBuffer) / 2,
@@ -50,6 +50,29 @@ void ProgressTab::setValue(float value) {
 }
 
 void ProgressTab::onRotate(HumidifierApplication* app) {
-	_value = clamp(_value + (float) app->getEncoder()->getRotation() / 100.0f, 0.0f, 1.0f);
+	const auto rotation = app->getEncoder()->getRotation();
+
+	if (abs(rotation) < 4)
+		return;
+
+	const auto time = millis();
+	const auto deltaTime = time -_lastRotation;
+
+	float addend;
+
+	if (deltaTime < 70) {
+		addend = 0.10f;
+	}
+	else {
+		addend = 0.01f;
+	}
+
+	_lastRotation = time;
+	_value = clamp(_value + addend * (rotation > 0 ? 1.f : -1.f), 0.f, 1.f);
+
 	app->getEncoder()->setRotation(0);
+
+	onValueChanged(app);
+
+//	Serial.printf("Delta time: %lu, value: %f\n", deltaTime, _value);
 }

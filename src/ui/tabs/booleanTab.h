@@ -14,6 +14,9 @@ class BooleanTab : public Tab {
 
 		void onRotate(HumidifierApplication* app) override;
 
+		virtual void onValueChanged(HumidifierApplication* app) {
+
+		}
 	private:
-		bool _value = 0;
+		bool _value = false;
 };

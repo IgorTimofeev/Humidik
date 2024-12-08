@@ -14,6 +14,11 @@ class ProgressTab : public Tab {
 
 		void onRotate(HumidifierApplication* app) override;
 
+		virtual void onValueChanged(HumidifierApplication* app) {
+			
+		}
+
 	private:
 		float _value = 0;
+		uint32_t _lastRotation = 0;
 };

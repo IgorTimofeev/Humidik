@@ -7,5 +7,5 @@ class FanTab : public ProgressTab {
 	public:
 		explicit FanTab();
 
-		void onRotate(HumidifierApplication* app) override;
+		void onValueChanged(HumidifierApplication* app) override;
 };

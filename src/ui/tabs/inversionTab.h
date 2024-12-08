@@ -7,5 +7,5 @@ class InversionTab : public BooleanTab {
 	public:
 		explicit InversionTab();
 
-		void onRotate(HumidifierApplication* app) override;
+		void onValueChanged(HumidifierApplication* app) override;
 };

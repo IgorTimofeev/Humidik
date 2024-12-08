@@ -2,7 +2,7 @@
 #include "../humidifierApplication.h"
 
 ColorTab::ColorTab(const wchar_t* name) : ProgressTab(name) {
-	setValue(1);
+
 }
 
 HueTab::HueTab() : ColorTab(L"HUE") {

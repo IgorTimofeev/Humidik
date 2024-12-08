@@ -5,8 +5,6 @@ InversionTab::InversionTab() : BooleanTab(L"INV") {
 
 }
 
-void InversionTab::onRotate(HumidifierApplication* app) {
-	BooleanTab::onRotate(app);
-
+void InversionTab::onValueChanged(HumidifierApplication* app) {
 	app->getScreenDriver()->setInverted(getValue());
 }

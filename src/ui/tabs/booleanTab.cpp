@@ -32,9 +32,11 @@ void BooleanTab::setValue(bool value) {
 }
 
 void BooleanTab::onRotate(HumidifierApplication* app) {
-	if (abs(app->getEncoder()->getRotation()) <= 3)
+	if (abs(app->getEncoder()->getRotation()) < 4)
 		return;
 
-	_value = !_value;
+	_value = app->getEncoder()->getRotation() > 0;
 	app->getEncoder()->setRotation(0);
+
+	onValueChanged(app);
 }
