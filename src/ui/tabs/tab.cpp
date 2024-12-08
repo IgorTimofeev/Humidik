@@ -1,5 +1,5 @@
 #include "tab.h"
-#include "ui/humidifierApplication.h"
+#include "ui/app.h"
 
 Tab::Tab(const wchar_t* name) : _name(name) {
 
@@ -9,7 +9,7 @@ void Tab::setup() {
 
 }
 
-void Tab::tick(HumidifierApplication* app) {
+void Tab::tick() {
 
 }
 
@@ -17,22 +17,14 @@ const wchar_t* Tab::getName() const {
 	return _name;
 }
 
-bool Tab::isSelected() const {
-	return _active;
+bool Tab::isFocusable() const {
+	return _focusable;
 }
 
-void Tab::setSelected(bool value) {
-	_active = value;
+void Tab::setFocusable(bool selectable) {
+	_focusable = selectable;
 }
 
-bool Tab::isSelectable() const {
-	return _selectable;
-}
-
-void Tab::setSelectable(bool selectable) {
-	_selectable = selectable;
-}
-
-void Tab::onRotate(HumidifierApplication* app) {
+void Tab::onRotate() {
 
 }

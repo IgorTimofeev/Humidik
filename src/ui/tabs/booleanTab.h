@@ -7,16 +7,14 @@ class BooleanTab : public Tab {
 	public:
 		explicit BooleanTab(const wchar_t* name);
 
-		void render(HumidifierApplication* app) override;
+		void render() override;
 
 		bool getValue() const;
 		void setValue(bool value);
 
-		void onRotate(HumidifierApplication* app) override;
+		void onRotate() override;
 
-		virtual void onValueChanged(HumidifierApplication* app) {
-
-		}
+		virtual void onValueChangedByRotate();
 	private:
 		bool _value = false;
 };

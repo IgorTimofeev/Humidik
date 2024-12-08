@@ -1,10 +1,10 @@
 #include "contrastTab.h"
-#include "../humidifierApplication.h"
+#include "../app.h"
 
 ContrastTab::ContrastTab() : ProgressTab(L"CTRS") {
 
 }
 
-void ContrastTab::onValueChanged(HumidifierApplication* app) {
-	app->getScreenDriver()->setContrast((uint8_t) (255.0f * getValue()));
+void ContrastTab::onValueChanged() {
+	App::getInstance().screenDriver.setContrast((uint8_t) (255.0f * getValue()));
 }

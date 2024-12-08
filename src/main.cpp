@@ -1,13 +1,13 @@
 #include "Arduino.h"
-#include "settings.h"
+#include "constants.h"
 #include "ui/theme.h"
 #include "../lib/YOBA/src/hardware/screen/drivers/SH1106Driver.h"
 #include "../lib/YOBA/src/hardware/screen/buffers/monochromeBuffer.h"
 #include <Adafruit_GFX.h>
 #include <SH1106.h>
-#include "ui/humidifierApplication.h"
+#include "ui/app.h"
 
-HumidifierApplication application = HumidifierApplication();
+App& application = App::getInstance();
 
 void setup() {
 	Serial.begin(115200);
@@ -18,7 +18,7 @@ void setup() {
 void loop() {
 	application.tick();
 
-	delay(1);
+	delay(16);
 }
 
 // ----------------------------------------------------------------------
@@ -26,9 +26,9 @@ void loop() {
 //using namespace yoba;
 //
 //SH1106Driver screenDriver = SH1106Driver(
-//	settings::pinout::screen::chipSelect,
-//	settings::pinout::screen::dataCommand,
-//	settings::pinout::screen::reset
+//	constants::pinout::screen::chipSelect,
+//	constants::pinout::screen::dataCommand,
+//	constants::pinout::screen::reset
 //);
 //
 //MonochromeBuffer screenBuffer = MonochromeBuffer(&screenDriver);
@@ -52,9 +52,9 @@ void loop() {
 // ----------------------------------------------------------------------
 
 //Adafruit_SH1106 display(
-//	settings::pinout::screen::dataCommand,
-//	settings::pinout::screen::reset,
-//	settings::pinout::screen::chipSelect
+//	constants::pinout::screen::dataCommand,
+//	constants::pinout::screen::reset,
+//	constants::pinout::screen::chipSelect
 //);
 //
 //void setup() {

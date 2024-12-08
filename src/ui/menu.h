@@ -10,33 +10,21 @@
 #include "ui/tabs/inversionTab.h"
 #include "vector"
 #include <cstdint>
+#include <functional>
 
-class HumidifierApplication;
+class App;
 
 class Menu {
 	public:
 		void setup();
 
-		void tick(HumidifierApplication* app);
-
-		uint8_t getSelectedIndex() const;
-		void setSelectedIndex(uint8_t value);
-
-		Tab* getSelectedTab();
-		void addTab(Tab* tab);
+		void tick();
 
 	private:
-		std::vector<Tab*> _tabs {};
-		uint8_t _selectedIndex = 0;
-		bool _oldPressed = false;
+//		std::function<Tab*()> govnomassiv[1] {
+//			[]() { return new ContrastTab(); }
+//		};
 
-		TemperatureTab _temperatureTab = TemperatureTab();
-		HumidityTab _humidityTab = HumidityTab();
-		HueTab _hueTab = HueTab();
-		SaturationTab _saturationTab = SaturationTab();
-		BrightnessTab _brightnessTab = BrightnessTab();
-		FanTab _fanTab = FanTab();
-		EmitterTab _emitterTab = EmitterTab();
-		ContrastTab _contrastTab = ContrastTab();
-		InversionTab _inversionTab = InversionTab();
+		std::vector<Tab*> _tabs {};
+		bool _oldPressed = false;
 };

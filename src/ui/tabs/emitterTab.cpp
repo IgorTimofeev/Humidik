@@ -1,11 +1,11 @@
 #include "emitterTab.h"
-#include "../humidifierApplication.h"
+#include "../app.h"
 
 EmitterTab::EmitterTab() : ProgressTab(L"EMI") {
 
 }
 
-void EmitterTab::onValueChanged(HumidifierApplication* app) {
+void EmitterTab::onValueChanged() {
 
 	
 }

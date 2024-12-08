@@ -1,15 +1,15 @@
 #include "progressTab.h"
-#include "ui/humidifierApplication.h"
+#include "ui/app.h"
 #include "../../../lib/YOBA/src/number.h"
 
 ProgressTab::ProgressTab(const wchar_t* name) : Tab(name) {
 
 }
 
-void ProgressTab::render(HumidifierApplication* app) {
-	auto screenBuffer = app->getScreenBuffer();
+void ProgressTab::render() {
+	auto& app = App::getInstance();
 
-	const auto& bufferSize = screenBuffer->getSize();
+	const auto& bufferSize = app.screenBuffer.getSize();
 	const auto& size = Size(80, 5);
 
 	const auto& bounds = Bounds(
@@ -20,8 +20,8 @@ void ProgressTab::render(HumidifierApplication* app) {
 		size
 	);
 
-	screenBuffer->renderHorizontalLine(Point(bounds.getX(), bounds.getYCenter()), bounds.getWidth(), &Theme::black);
-	screenBuffer->renderFilledRectangle(
+	app.screenBuffer.renderHorizontalLine(Point(bounds.getX(), bounds.getYCenter()), bounds.getWidth(), &Theme::black);
+	app.screenBuffer.renderFilledRectangle(
 		Bounds(bounds.getX(), bounds.getY(), (uint16_t) ((float) bounds.getWidth() * _value),bounds.getHeight()),
 		2,
 		&Theme::black
@@ -30,7 +30,7 @@ void ProgressTab::render(HumidifierApplication* app) {
 	// Text
 	wchar_t textBuffer[4];
 	swprintf(textBuffer, 4, L"%.0f%", _value * 100);
-	screenBuffer->renderText(
+	app.screenBuffer.renderText(
 		Point(
 			bounds.getXCenter() - Theme::fontSmall.getWidth(textBuffer) / 2,
 			bounds.getY2() + 2
@@ -49,8 +49,10 @@ void ProgressTab::setValue(float value) {
 	_value = value;
 }
 
-void ProgressTab::onRotate(HumidifierApplication* app) {
-	const auto rotation = app->getEncoder()->getRotation();
+void ProgressTab::onRotate() {
+	auto& app = App::getInstance();
+
+	const auto rotation = app.encoder.getRotation();
 
 	if (abs(rotation) < 4)
 		return;
@@ -70,9 +72,34 @@ void ProgressTab::onRotate(HumidifierApplication* app) {
 	_lastRotation = time;
 	_value = clamp(_value + addend * (rotation > 0 ? 1.f : -1.f), 0.f, 1.f);
 
-	app->getEncoder()->setRotation(0);
+	app.encoder.setRotation(0);
 
-	onValueChanged(app);
+	onValueChanged();
 
 //	Serial.printf("Delta time: %lu, value: %f\n", deltaTime, _value);
+}
+
+void ProgressTab::onValueChanged() {
+
+}
+
+PWMProgressTab::PWMProgressTab(const wchar_t* name, uint8_t pin, uint8_t* configValue) : ProgressTab(name), _pin(pin), _configValue(configValue) {
+
+}
+
+void PWMProgressTab::setup() {
+	setValue((float) *_configValue / 255.f);
+	pwm();
+}
+
+void PWMProgressTab::onValueChanged() {
+	_configValue[0] = (uint8_t) (getValue() * 255.f);
+
+	pwm();
+
+	App::getInstance().config.enqueueWrite();
+}
+
+void PWMProgressTab::pwm() const {
+	analogWrite(_pin, 255 - *_configValue);
 }

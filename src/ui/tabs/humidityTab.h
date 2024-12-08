@@ -10,10 +10,10 @@ class HumidityTab : public ValueAndSuffixTab {
 		HumidityTab() : ValueAndSuffixTab(L"HMDT") {
 			wcscpy(suffix, L"%");
 
-			setSelectable(false);
+			setFocusable(false);
 		}
 
-		void tick(HumidifierApplication* app) override {
+		void tick() override {
 			uint16_t humidity = 60;
 
 			swprintf(value, sizeof(value), L"%d", humidity);

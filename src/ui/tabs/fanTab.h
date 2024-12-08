@@ -3,9 +3,7 @@
 #include <cstdint>
 #include "progressTab.h"
 
-class FanTab : public ProgressTab {
+class FanTab : public PWMProgressTab {
 	public:
 		explicit FanTab();
-
-		void onValueChanged(HumidifierApplication* app) override;
 };

@@ -2,7 +2,7 @@
 
 #include "cstdint"
 
-namespace settings {
+namespace constants {
 	namespace pinout {
 		namespace encoder {
 			const uint8_t clk = 22;

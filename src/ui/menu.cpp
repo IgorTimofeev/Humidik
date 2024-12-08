@@ -1,67 +1,76 @@
 #include "menu.h"
-#include "humidifierApplication.h"
+#include "app.h"
 #include "../../lib/YOBA/src/number.h"
 
 void Menu::setup() {
-	addTab(&_humidityTab);
-	addTab(&_temperatureTab);
-	addTab(&_hueTab);
-	addTab(&_saturationTab);
-	addTab(&_brightnessTab);
-	addTab(&_fanTab);
-	addTab(&_emitterTab);
-	addTab(&_contrastTab);
-	addTab(&_inversionTab);
+	const auto& addTab = [&](Tab* tab) {
+		tab->setup();
+		_tabs.push_back(tab);
+	};
+
+	addTab(new HumidityTab());
+	addTab(new TemperatureTab());
+	addTab(new HueTab());
+	addTab(new SaturationTab());
+	addTab(new BrightnessTab());
+	addTab(new FanTab());
+	addTab(new EmitterTab());
+	addTab(new ContrastTab());
+	addTab(new InversionTab());
 }
 
-void Menu::tick(HumidifierApplication* app) {
-	auto screenBuffer = app->getScreenBuffer();
-	auto encoder = app->getEncoder();
+void Menu::tick() {
+	auto& app = App::getInstance();
 
+	auto selectedTab = _tabs[app.config.ui.tabIndex];
+
+	// Pressing check
+	if (app.encoder.getRotation() == 0) {
+		bool pressedChanged = app.encoder.isPressed() != _oldPressed;
+		_oldPressed = app.encoder.isPressed();
+
+		// Toggling tab active state on encoder press
+		if (pressedChanged && app.encoder.isPressed() && selectedTab->isFocusable()) {
+			app.config.ui.focused = !app.config.ui.focused;
+
+			app.config.enqueueWrite();
+		}
+	}
 	// Rotation check
-	auto selectedTab = getSelectedTab();
-
-	if (encoder->getRotation() != 0) {
+	else {
 		// Using tab rotate
-		if (selectedTab->isSelected()) {
-			selectedTab->onRotate(app);
+		if (app.config.ui.focused) {
+			selectedTab->onRotate();
 		}
 		// Cycling between tabs
 		else {
-			if (abs(encoder->getRotation()) > 3) {
-				_selectedIndex = (uint8_t) clamp(
-					(int8_t) ((int8_t) _selectedIndex + (encoder->getRotation() > 0 ? 1 : -1)),
+			if (abs(app.encoder.getRotation()) > 3) {
+				app.config.ui.tabIndex = (uint8_t) clamp(
+					(int8_t) ((int8_t) app.config.ui.tabIndex + (app.encoder.getRotation() > 0 ? 1 : -1)),
 					(int8_t) 0,
 					(int8_t) (_tabs.size() - 1)
 				);
 
-				selectedTab = getSelectedTab();
+				selectedTab = _tabs[app.config.ui.tabIndex];
 
-				encoder->setRotation(0);
+				app.encoder.setRotation(0);
+
+				app.config.enqueueWrite();
 			}
 		}
 	}
 
-	// Press check
-	bool pressedChanged = encoder->isPressed() != _oldPressed;
-	_oldPressed = encoder->isPressed();
-
-	// Toggling tab active state on encoder press
-	if (pressedChanged && encoder->isPressed() && selectedTab->isSelectable()) {
-		selectedTab->setSelected(!selectedTab->isSelected());
-	}
-
 	// Tab rendering
-	screenBuffer->clear(&Theme::white);
+	app.screenBuffer.clear(&Theme::white);
 
 	const auto textSize = Theme::fontSmall.getSize(selectedTab->getName());
 
-	int32_t textX = screenBuffer->getSize().getWidth() / 2 - textSize.getWidth() / 2;
+	int32_t textX = app.screenBuffer.getSize().getWidth() / 2 - textSize.getWidth() / 2;
 	int32_t textY = 2;
 
 	// Border around selected tab
-	if (selectedTab->isSelected()) {
-		screenBuffer->renderFilledRectangle(
+	if (app.config.ui.focused) {
+		app.screenBuffer.renderFilledRectangle(
 			Bounds(
 				textX - 2,
 				textY + 1,
@@ -74,7 +83,12 @@ void Menu::tick(HumidifierApplication* app) {
 	}
 
 	// Text
-	screenBuffer->renderText(Point(textX, textY), &Theme::fontSmall, selectedTab->isSelected() ? &Theme::white : &Theme::black, selectedTab->getName());
+	app.screenBuffer.renderText(
+		Point(textX, textY),
+		&Theme::fontSmall,
+		app.config.ui.focused ? &Theme::white : &Theme::black,
+		selectedTab->getName()
+	);
 
 	// Dots
 	const uint8_t dotSize = 2;
@@ -85,37 +99,21 @@ void Menu::tick(HumidifierApplication* app) {
 	int32_t y = textY + textSize.getHeight() / 2;
 
 	// Left dots
-	for (int32_t i = _selectedIndex - 1; i >= 0; i--) {
-		screenBuffer->renderRectangle(Bounds(x - dotSpacing, y, dotSize, dotSize), &Theme::black);
+	for (int32_t i = app.config.ui.tabIndex - 1; i >= 0; i--) {
+		app.screenBuffer.renderRectangle(Bounds(x - dotSpacing, y, dotSize, dotSize), &Theme::black);
 		x = x - dotSize - dotSpacing;
 	}
 
 	// Right dots
 	x = textX + textSize.getWidth() + dotOffset;
 
-	for (int32_t i = _selectedIndex + 1; i < _tabs.size(); i++) {
-		screenBuffer->renderRectangle(Bounds(x, y, dotSize, dotSize), &Theme::black);
+	for (int32_t i = app.config.ui.tabIndex + 1; i < _tabs.size(); i++) {
+		app.screenBuffer.renderRectangle(Bounds(x, y, dotSize, dotSize), &Theme::black);
 		x = x + dotSize + dotSpacing;
 	}
 
-	selectedTab->tick(app);
-	selectedTab->render(app);
+	selectedTab->tick();
+	selectedTab->render();
 
-	screenBuffer->flush();
-}
-
-uint8_t Menu::getSelectedIndex() const {
-	return _selectedIndex;
-}
-
-void Menu::setSelectedIndex(uint8_t value) {
-	Menu::_selectedIndex = value;
-}
-
-Tab* Menu::getSelectedTab() {
-	return _selectedIndex < _tabs.size() ? _tabs[_selectedIndex] : nullptr;
-}
-
-void Menu::addTab(Tab* tab) {
-	_tabs.push_back(tab);
+	app.screenBuffer.flush();
 }

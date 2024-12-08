@@ -1,10 +1,10 @@
 #include "inversionTab.h"
-#include "../humidifierApplication.h"
+#include "../app.h"
 
 InversionTab::InversionTab() : BooleanTab(L"INV") {
 
 }
 
-void InversionTab::onValueChanged(HumidifierApplication* app) {
-	app->getScreenDriver()->setInverted(getValue());
+void InversionTab::onValueChangedByRotate() {
+	App::getInstance().screenDriver.setInverted(getValue());
 }

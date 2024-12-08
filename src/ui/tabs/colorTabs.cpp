@@ -1,5 +1,5 @@
 #include "colorTabs.h"
-#include "../humidifierApplication.h"
+#include "../app.h"
 
 ColorTab::ColorTab(const wchar_t* name) : ProgressTab(name) {
 

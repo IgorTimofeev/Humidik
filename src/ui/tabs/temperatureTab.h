@@ -10,10 +10,10 @@ class TemperatureTab : public ValueAndSuffixTab {
 		TemperatureTab() : ValueAndSuffixTab(L"TEMP") {
 			wcscpy(suffix, L"°C");
 
-			setSelectable(false);
+			setFocusable(false);
 		}
 
-		void tick(HumidifierApplication* app) override {
+		void tick() override {
 			uint16_t temperature = 24;
 
 			swprintf(value, sizeof(value), L"%d", temperature);

@@ -7,5 +7,5 @@ class ContrastTab : public ProgressTab {
 	public:
 		explicit ContrastTab();
 
-		void onValueChanged(HumidifierApplication* app) override;
+		void onValueChanged() override;
 };
