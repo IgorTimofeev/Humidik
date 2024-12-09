@@ -96,25 +96,24 @@ void Menu::tick() {
 	);
 
 	// Dots
-	const uint8_t dotSize = 2;
 	const uint8_t dotSpacing = 4;
-	const uint8_t dotOffset = 4;
+	const uint8_t dotOffset = 3;
 
 	int32_t x = textX - dotOffset;
 	int32_t y = textY + textSize.getHeight() / 2;
 
 	// Left dots
 	for (int32_t i = app.config.ui.tabIndex - 1; i >= 0; i--) {
-		app.screenBuffer.renderRectangle(Bounds(x - dotSpacing, y, dotSize, dotSize), &Theme::white);
-		x = x - dotSize - dotSpacing;
+		app.screenBuffer.renderPixel(Point(x - dotSpacing, y), &Theme::white);
+		x = x - dotSpacing;
 	}
 
 	// Right dots
 	x = textX + textSize.getWidth() + dotOffset;
 
 	for (int32_t i = app.config.ui.tabIndex + 1; i < _tabs.size(); i++) {
-		app.screenBuffer.renderRectangle(Bounds(x, y, dotSize, dotSize), &Theme::white);
-		x = x + dotSize + dotSpacing;
+		app.screenBuffer.renderPixel(Point(x, y), &Theme::white);
+		x = x + dotSpacing;
 	}
 
 	// Tab content

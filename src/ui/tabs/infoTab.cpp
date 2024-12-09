@@ -4,13 +4,15 @@
 InfoTab::InfoTab() : Tab(L"Info") {
 	setFocusable(false);
 
-	wcscpy(_humiditySuffixBuffer, L"°C");
+	wcscpy(_humiditySuffixBuffer, L"%");
 	wcscpy(_temperatureSuffixBuffer, L"°C");
 }
 
 void InfoTab::tick() {
-	swprintf(_humidityTextBuffer, 16, L"%d", 60);
-	swprintf(_temperatureTextBuffer, 16, L"%d", 24);
+	auto& app = App::getInstance();
+
+	swprintf(_humidityTextBuffer, 6, L"%.0f", app.getHumidity());
+	swprintf(_temperatureTextBuffer, 6, L"%.0f", app.getTemperature());
 }
 
 void InfoTab::render() {
@@ -48,7 +50,7 @@ void InfoTab::render() {
 		app.screenBuffer.getSize().getHeight() - marginTop
 	);
 
-	renderPizda(bounds, -3, _humidityTextBuffer, _humiditySuffixBuffer);
+	renderPizda(bounds, -1, _humidityTextBuffer, _humiditySuffixBuffer);
 
 	// Line
 	app.screenBuffer.renderVerticalLine(

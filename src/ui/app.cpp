@@ -32,4 +32,24 @@ void App::setup() {
 void App::tick() {
 	menu.tick();
 	config.tick();
+
+	readSensors();
+}
+
+void App::readSensors() {
+	if (millis() < _sensorsTickDeadline)
+		return;
+
+	_humidity = (float) random(40, 50);
+	_temperature = (float) random(24, 30);
+
+	_sensorsTickDeadline = millis() + 1000;
+}
+
+float App::getTemperature() const {
+	return _temperature;
+}
+
+float App::getHumidity() const {
+	return _humidity;
 }

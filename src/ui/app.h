@@ -21,7 +21,6 @@ class App {
 			constants::pinout::encoder::sw
 		);
 
-
 		SH1106Driver screenDriver = SH1106Driver(
 			constants::pinout::screen::chipSelect,
 			constants::pinout::screen::dataCommand,
@@ -36,4 +35,13 @@ class App {
 
 		void setup();
 		void tick();
+		float getTemperature() const;
+		float getHumidity() const;
+
+	private:
+		float _temperature = 0;
+		float _humidity = 0;
+		uint32_t _sensorsTickDeadline = 0;
+
+		void readSensors();
 };

@@ -37,7 +37,7 @@ void TargetHumidityTab::onRotate() {
 		addend = 1;
 	}
 
-	*getConfigValue() = addSaturating(*getConfigValue(), addend * (rotation > 0 ? 1 : -1));
+	*getConfigValue() = min(addSaturating(*getConfigValue(), addend * (rotation > 0 ? 1 : -1)), (uint8_t) 100);
 
 	updateTextBuffers();
 

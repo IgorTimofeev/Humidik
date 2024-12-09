@@ -12,9 +12,9 @@ class InfoTab : public Tab {
 		void render() override;
 
 	private:
-		wchar_t _temperatureTextBuffer[4] {};
-		wchar_t _temperatureSuffixBuffer[4] {};
+		wchar_t _humidityTextBuffer[6] {};
+		wchar_t _humiditySuffixBuffer[2] {};
 
-		wchar_t _humidityTextBuffer[4] {};
-		wchar_t _humiditySuffixBuffer[4] {};
+		wchar_t _temperatureTextBuffer[6] {};
+		wchar_t _temperatureSuffixBuffer[3] {};
 };

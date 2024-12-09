@@ -26,7 +26,7 @@ class Config {
 		ConfigDisplay display = ConfigDisplay();
 		uint8_t fanPower = 0xFF;
 		uint8_t atomizerPower = 0xFF;
-		uint8_t targetHumidity = 60;
+		uint8_t targetHumidity = 100;
 		uint16_t shutdownDelay = 0;
 
 		void read() {
@@ -53,7 +53,7 @@ class Config {
 		}
 
 		void enqueueWrite() {
-			_enqueuedWriteDeadline = millis() + 3000;
+			_enqueuedWriteDeadline = millis() + 1000;
 		}
 
 		void tick() {

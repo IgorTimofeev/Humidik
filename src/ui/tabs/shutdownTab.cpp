@@ -2,7 +2,7 @@
 #include "../app.h"
 #include "../../../lib/YOBA/src/number.h"
 
-ShutdownTab::ShutdownTab() : TextAndSuffixTab(L"Shutdown"), ConfigValueTab<uint16_t>(&App::getInstance().config.shutdownDelay) {
+ShutdownTab::ShutdownTab() : TextAndSuffixTab(L"Timer"), ConfigValueTab<uint16_t>(&App::getInstance().config.shutdownDelay) {
 	setText(_textBuffer);
 }
 
@@ -51,7 +51,7 @@ void ShutdownTab::updateTextBuffers() {
 	const auto value = *getConfigValue();
 
 	if (value == 0) {
-		wcscpy(_textBuffer, L"Disabled");
+		wcscpy(_textBuffer, L"Disable");
 
 		setSuffix(nullptr);
 	}
