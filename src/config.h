@@ -11,7 +11,7 @@ struct ConfigStrip {
 
 struct ConfigDisplay {
 	uint8_t contrast = 0xFF;
-	bool invertColors = false;
+	bool invert = true;
 };
 
 struct UI {
@@ -27,7 +27,7 @@ class Config {
 		uint8_t fanPower = 0xFF;
 		uint8_t atomizerPower = 0xFF;
 		uint8_t targetHumidity = 60;
-		uint32_t shutdownDelay = 0;
+		uint16_t shutdownDelay = 0;
 
 		void read() {
 			Serial.println("Initializing EEPROM");

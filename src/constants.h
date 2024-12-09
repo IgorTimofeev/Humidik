@@ -17,5 +17,6 @@ namespace constants {
 		}
 
 		const uint8_t fan = 19;
+		const uint8_t atomizer = 33;
 	}
 }

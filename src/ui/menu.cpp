@@ -4,38 +4,38 @@
 #include "array"
 
 void Menu::setup() {
-	switchTab();
-}
+	uint8_t index = 0;
 
-void Menu::switchTab() {
-	auto& app = App::getInstance();
+	const auto addTab = [&](Tab* tab) {
+		tab->setup();
+		_tabs[index] = tab;
+		index++;
+	};
 
-	delete _selectedTab;
+	addTab(new InfoTab());
+	addTab(new TargetHumidityTab());
+	addTab(new ShutdownTab());
+	addTab(new HueTab());
 
-	_selectedTab = _tabs[app.config.ui.tabIndex]();
-	_selectedTab->setup();
+	addTab(new SaturationTab());
+	addTab(new BrightnessTab());
+	addTab(new AtomizerTab());
+	addTab(new FanTab());
+
+	addTab(new ContrastTab());
+	addTab(new ThemeTab());
 }
 
 void Menu::tick() {
 	auto& app = App::getInstance();
 
-	// Pressing check
-	if (app.encoder.getRotation() == 0) {
-		bool pressedChanged = app.encoder.isPressed() != _oldPressed;
-		_oldPressed = app.encoder.isPressed();
+	auto selectedTab = _tabs[app.config.ui.tabIndex];
 
-		// Toggling tab active state on encoder press
-		if (pressedChanged && app.encoder.isPressed() && _selectedTab->isFocusable()) {
-			app.config.ui.focused = !app.config.ui.focused;
-
-			app.config.enqueueWrite();
-		}
-	}
-	// Rotation check
-	else {
-		// Using tab rotate
+	// No encoder press change detected
+	if (app.encoder.isPressed() == _oldPressed) {
+		// Rotating focused tab
 		if (app.config.ui.focused) {
-			_selectedTab->onRotate();
+			selectedTab->onRotate();
 		}
 		// Cycling between tabs
 		else {
@@ -46,19 +46,29 @@ void Menu::tick() {
 					(int8_t) (_tabs.size() - 1)
 				);
 
-				switchTab();
-
 				app.encoder.setRotation(0);
+
+				selectedTab = _tabs[app.config.ui.tabIndex];
 
 				app.config.enqueueWrite();
 			}
 		}
 	}
+	else {
+		// Encoder press
+		if (app.encoder.isPressed() && selectedTab->isFocusable()) {
+			app.config.ui.focused = !app.config.ui.focused;
 
-	// Tab rendering
-	app.screenBuffer.clear(&Theme::white);
+			app.config.enqueueWrite();
+		}
+	}
 
-	const auto textSize = Theme::fontSmall.getSize(_selectedTab->getName());
+	_oldPressed = app.encoder.isPressed();
+
+	// Rendering UI
+	app.screenBuffer.clear(&Theme::black);
+
+	const auto textSize = Theme::fontSmall.getSize(selectedTab->getName());
 
 	int32_t textX = app.screenBuffer.getSize().getWidth() / 2 - textSize.getWidth() / 2;
 	int32_t textY = 2;
@@ -73,7 +83,7 @@ void Menu::tick() {
 				textSize.getHeight() - 2
 			),
 			2,
-			&Theme::black
+			&Theme::white
 		);
 	}
 
@@ -81,8 +91,8 @@ void Menu::tick() {
 	app.screenBuffer.renderText(
 		Point(textX, textY),
 		&Theme::fontSmall,
-		app.config.ui.focused ? &Theme::white : &Theme::black,
-		_selectedTab->getName()
+		app.config.ui.focused ? &Theme::black : &Theme::white,
+		selectedTab->getName()
 	);
 
 	// Dots
@@ -95,7 +105,7 @@ void Menu::tick() {
 
 	// Left dots
 	for (int32_t i = app.config.ui.tabIndex - 1; i >= 0; i--) {
-		app.screenBuffer.renderRectangle(Bounds(x - dotSpacing, y, dotSize, dotSize), &Theme::black);
+		app.screenBuffer.renderRectangle(Bounds(x - dotSpacing, y, dotSize, dotSize), &Theme::white);
 		x = x - dotSize - dotSpacing;
 	}
 
@@ -103,12 +113,14 @@ void Menu::tick() {
 	x = textX + textSize.getWidth() + dotOffset;
 
 	for (int32_t i = app.config.ui.tabIndex + 1; i < _tabs.size(); i++) {
-		app.screenBuffer.renderRectangle(Bounds(x, y, dotSize, dotSize), &Theme::black);
+		app.screenBuffer.renderRectangle(Bounds(x, y, dotSize, dotSize), &Theme::white);
 		x = x + dotSize + dotSpacing;
 	}
 
-	_selectedTab->tick();
-	_selectedTab->render();
+	// Tab content
+	selectedTab->tick();
+	selectedTab->render();
 
+	// Cyka!
 	app.screenBuffer.flush();
 }

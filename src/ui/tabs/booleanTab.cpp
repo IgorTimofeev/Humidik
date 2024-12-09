@@ -2,14 +2,19 @@
 #include "ui/app.h"
 #include "../../../lib/YOBA/src/number.h"
 
-BooleanTab::BooleanTab(const wchar_t* name) : Tab(name) {
+BooleanTab::BooleanTab(const wchar_t* name, const wchar_t* trueText, const wchar_t* falseText, bool* configValue) :
+	Tab(name),
+	ConfigValueTab<bool>(configValue),
+	_trueText(trueText),
+	_falseText(falseText)
+{
 
 }
 
 void BooleanTab::render() {
 	auto& app = App::getInstance();
 
-	const auto text = _value ? L"Yes" : L"No";
+	const auto text = *getConfigValue() ? _trueText : _falseText;
 	const auto& textSize = Theme::fontBig.getSize(text);
 
 	app.screenBuffer.renderText(
@@ -18,17 +23,9 @@ void BooleanTab::render() {
 			app.screenBuffer.getSize().getHeight() / 2 - textSize.getHeight() / 2
 		),
 		&Theme::fontBig,
-		&Theme::black,
+		&Theme::white,
 		text
 	);
-}
-
-bool BooleanTab::getValue() const {
-	return _value;
-}
-
-void BooleanTab::setValue(bool value) {
-	_value = value;
 }
 
 void BooleanTab::onRotate() {
@@ -37,12 +34,11 @@ void BooleanTab::onRotate() {
 	if (abs(app.encoder.getRotation()) < 4)
 		return;
 
-	_value = app.encoder.getRotation() > 0;
+	// Config
+	*getConfigValue() = !*getConfigValue();
+	app.config.enqueueWrite();
+
 	app.encoder.setRotation(0);
 
-	onValueChangedByRotate();
-}
-
-void BooleanTab::onValueChangedByRotate() {
-
+	onRotateProcessed();
 }

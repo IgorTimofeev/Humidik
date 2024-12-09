@@ -21,7 +21,6 @@ class App {
 			constants::pinout::encoder::sw
 		);
 
-		Menu menu = Menu();
 
 		SH1106Driver screenDriver = SH1106Driver(
 			constants::pinout::screen::chipSelect,
@@ -30,6 +29,8 @@ class App {
 		);
 
 		MonochromeBuffer screenBuffer = MonochromeBuffer(&screenDriver);
+
+		Menu menu = Menu();
 
 		static App& getInstance();
 

@@ -3,18 +3,16 @@
 #include <cstdint>
 #include "tab.h"
 
-class BooleanTab : public Tab {
+class BooleanTab : public Tab, public ConfigValueTab<bool> {
 	public:
-		explicit BooleanTab(const wchar_t* name);
+		explicit BooleanTab(const wchar_t* name, const wchar_t* trueText, const wchar_t* falseText, bool* configValue);
 
 		void render() override;
 
-		bool getValue() const;
-		void setValue(bool value);
-
 		void onRotate() override;
 
-		virtual void onValueChangedByRotate();
+
 	private:
-		bool _value = false;
+		const wchar_t* _trueText;
+		const wchar_t* _falseText;
 };

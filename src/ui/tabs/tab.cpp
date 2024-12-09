@@ -28,3 +28,7 @@ void Tab::setFocusable(bool selectable) {
 void Tab::onRotate() {
 
 }
+
+void Tab::onRotateProcessed() {
+
+}

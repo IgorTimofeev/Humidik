@@ -7,5 +7,8 @@ class ContrastTab : public ProgressTab {
 	public:
 		explicit ContrastTab();
 
-		void onValueChanged() override;
+		void onRotateProcessed() override;
+		void setup() override;
+
+		void updateContrast();
 };

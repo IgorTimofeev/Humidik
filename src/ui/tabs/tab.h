@@ -4,6 +4,8 @@
 
 class App;
 
+// -------------------------------- Tab --------------------------------
+
 class Tab {
 	public:
 		explicit Tab(const wchar_t* name);
@@ -12,9 +14,9 @@ class Tab {
 
 		virtual void setup();
 		virtual void tick();
-		virtual void onRotate();
 		virtual void render() = 0;
-
+		virtual void onRotate();
+		virtual void onRotateProcessed();
 		const wchar_t* getName() const;
 		bool isFocusable() const;
 		void setFocusable(bool selectable);
@@ -23,3 +25,49 @@ class Tab {
 		const wchar_t* _name;
 		bool _focusable = true;
 };
+
+// -------------------------------- ValueTab --------------------------------
+
+template<typename TValue>
+class ValueTab {
+	public:
+		TValue getValue() const;
+
+		void setValue(TValue value);
+
+	private:
+		TValue _value;
+};
+
+template<typename TValue>
+TValue ValueTab<TValue>::getValue() const {
+	return _value;
+}
+
+template<typename TValue>
+void ValueTab<TValue>::setValue(TValue value) {
+	_value = value;
+}
+
+// -------------------------------- ConfigValueTab --------------------------------
+
+template<typename TValue>
+class ConfigValueTab {
+	public:
+		explicit ConfigValueTab(TValue* configValue);
+
+		TValue* getConfigValue();
+
+	private:
+		TValue* _configValue;
+};
+
+template<typename TValue>
+ConfigValueTab<TValue>::ConfigValueTab(TValue* configValue) : _configValue(configValue) {
+
+}
+
+template<typename TValue>
+TValue* ConfigValueTab<TValue>::getConfigValue() {
+	return _configValue;
+}

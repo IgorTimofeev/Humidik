@@ -5,7 +5,7 @@
 
 class ColorTab : public ProgressTab {
 	public:
-		explicit ColorTab(const wchar_t* name);
+		ColorTab(const wchar_t* name, uint8_t* configValue);
 };
 
 class HueTab : public ColorTab {

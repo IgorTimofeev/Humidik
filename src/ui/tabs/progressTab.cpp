@@ -2,8 +2,45 @@
 #include "ui/app.h"
 #include "../../../lib/YOBA/src/number.h"
 
-ProgressTab::ProgressTab(const wchar_t* name) : Tab(name) {
+ProgressTab::ProgressTab(const wchar_t* name, uint8_t* configValue) : Tab(name), ValueTab(), ConfigValueTab<uint8_t>(configValue) {
 
+}
+
+void ProgressTab::setup() {
+	setValue((float) *getConfigValue() / 255.f);
+}
+
+void ProgressTab::onRotate() {
+	auto& app = App::getInstance();
+
+	const auto rotation = app.encoder.getRotation();
+
+	if (abs(rotation) < 4)
+		return;
+
+	app.encoder.setRotation(0);
+
+	// Value
+	const auto time = millis();
+	const auto deltaTime = time - _lastRotation;
+	_lastRotation = time;
+
+	float addend;
+
+	if (deltaTime < 60) {
+		addend = 0.10f;
+	}
+	else {
+		addend = 0.01f;
+	}
+
+	setValue(clamp(getValue() + addend * (rotation > 0 ? 1.f : -1.f), 0.f, 1.f));
+
+	// Config
+	*getConfigValue() = (uint8_t) (getValue() * 255.f);
+	app.config.enqueueWrite();
+
+	onRotateProcessed();
 }
 
 void ProgressTab::render() {
@@ -20,86 +57,46 @@ void ProgressTab::render() {
 		size
 	);
 
-	app.screenBuffer.renderHorizontalLine(Point(bounds.getX(), bounds.getYCenter()), bounds.getWidth(), &Theme::black);
+	app.screenBuffer.renderHorizontalLine(Point(bounds.getX(), bounds.getYCenter()), bounds.getWidth(), &Theme::white);
 	app.screenBuffer.renderFilledRectangle(
-		Bounds(bounds.getX(), bounds.getY(), (uint16_t) ((float) bounds.getWidth() * _value),bounds.getHeight()),
+		Bounds(bounds.getX(), bounds.getY(), (uint16_t) ((float) bounds.getWidth() * getValue()),bounds.getHeight()),
 		2,
-		&Theme::black
+		&Theme::white
 	);
 
 	// Text
 	wchar_t textBuffer[4];
-	swprintf(textBuffer, 4, L"%.0f%", _value * 100);
+	swprintf(textBuffer, 4, L"%.0f%", getValue() * 100);
 	app.screenBuffer.renderText(
 		Point(
 			bounds.getXCenter() - Theme::fontSmall.getWidth(textBuffer) / 2,
 			bounds.getY2() + 2
 		),
 		&Theme::fontSmall,
-		&Theme::black,
+		&Theme::white,
 		textBuffer
 	);
 }
 
-float ProgressTab::getValue() const {
-	return _value;
-}
+// -------------------------------- PWMProgressTab --------------------------------
 
-void ProgressTab::setValue(float value) {
-	_value = value;
-}
 
-void ProgressTab::onRotate() {
-	auto& app = App::getInstance();
-
-	const auto rotation = app.encoder.getRotation();
-
-	if (abs(rotation) < 4)
-		return;
-
-	const auto time = millis();
-	const auto deltaTime = time -_lastRotation;
-
-	float addend;
-
-	if (deltaTime < 70) {
-		addend = 0.10f;
-	}
-	else {
-		addend = 0.01f;
-	}
-
-	_lastRotation = time;
-	_value = clamp(_value + addend * (rotation > 0 ? 1.f : -1.f), 0.f, 1.f);
-
-	app.encoder.setRotation(0);
-
-	onValueChanged();
-
-//	Serial.printf("Delta time: %lu, value: %f\n", deltaTime, _value);
-}
-
-void ProgressTab::onValueChanged() {
-
-}
-
-PWMProgressTab::PWMProgressTab(const wchar_t* name, uint8_t pin, uint8_t* configValue) : ProgressTab(name), _pin(pin), _configValue(configValue) {
+PWMProgressTab::PWMProgressTab(const wchar_t* name, uint8_t pin, uint8_t* configValue) : ProgressTab(name, configValue), _pin(pin) {
 
 }
 
 void PWMProgressTab::setup() {
-	setValue((float) *_configValue / 255.f);
+	ProgressTab::setup();
+
 	pwm();
 }
 
-void PWMProgressTab::onValueChanged() {
-	_configValue[0] = (uint8_t) (getValue() * 255.f);
+void PWMProgressTab::onRotateProcessed() {
+	ProgressTab::onRotateProcessed();
 
 	pwm();
-
-	App::getInstance().config.enqueueWrite();
 }
 
-void PWMProgressTab::pwm() const {
-	analogWrite(_pin, 255 - *_configValue);
+void PWMProgressTab::pwm() {
+	analogWrite(_pin, 255 - *getConfigValue());
 }

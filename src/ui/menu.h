@@ -1,13 +1,14 @@
 #pragma once
 
 #include "ui/tabs/tab.h"
-#include "ui/tabs/humidityTab.h"
-#include "ui/tabs/temperatureTab.h"
+#include "ui/tabs/infoTab.h"
 #include "ui/tabs/colorTabs.h"
 #include "ui/tabs/fanTab.h"
-#include "ui/tabs/emitterTab.h"
+#include "ui/tabs/atomizerTab.h"
 #include "ui/tabs/contrastTab.h"
-#include "ui/tabs/inversionTab.h"
+#include "ui/tabs/themeTab.h"
+#include "ui/tabs/shutdownTab.h"
+#include "ui/tabs/targetHumidityTab.h"
 #include "vector"
 #include <cstdint>
 #include <functional>
@@ -21,19 +22,7 @@ class Menu {
 		void tick();
 
 	private:
-		std::array<std::function<Tab*()>, 9> _tabs {
-			[]() { return new HumidityTab(); },
-			[]() { return new TemperatureTab(); },
-			[]() { return new HueTab(); },
-			[]() { return new SaturationTab(); },
-			[]() { return new BrightnessTab(); },
-			[]() { return new FanTab(); },
-			[]() { return new EmitterTab(); },
-			[]() { return new ContrastTab(); },
-			[]() { return new InversionTab(); }
-		};
+		std::array<Tab*, 10> _tabs {};
 
 		bool _oldPressed = false;
-		Tab* _selectedTab = nullptr;
-		void switchTab();
 };
