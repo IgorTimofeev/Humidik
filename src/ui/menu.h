@@ -11,7 +11,7 @@ class Menu {
 	public:
 		void setup();
 
-		void tick();
+		void render();
 
 	private:
 		std::array<Tab*, 10> _tabs {};

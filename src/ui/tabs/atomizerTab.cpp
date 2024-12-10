@@ -1,6 +1,12 @@
 #include "atomizerTab.h"
 #include "../app.h"
 
-AtomizerTab::AtomizerTab() : PWMProgressTab(L"Atomizer", constants::pinout::atomizer, &App::getInstance().config.atomizerPower) {
+AtomizerTab::AtomizerTab() : ProgressTab(L"Atomizer", &App::getInstance().config.atomizerPower) {
 
+}
+
+void AtomizerTab::onRotateProcessed() {
+	ProgressTab::onRotateProcessed();
+
+	App::getInstance().updateFanPower();
 }

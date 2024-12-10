@@ -19,8 +19,8 @@ void BooleanTab::render() {
 
 	app.screenBuffer.renderText(
 		Point(
-			app.screenBuffer.getSize().getWidth() / 2 - textSize.getWidth() / 2,
-			app.screenBuffer.getSize().getHeight() / 2 - textSize.getHeight() / 2
+			app.screenBuffer.getSize().getXCenter() - textSize.getXCenter(),
+			app.screenBuffer.getSize().getYCenter() - textSize.getYCenter()
 		),
 		&Theme::fontBig,
 		&Theme::white,

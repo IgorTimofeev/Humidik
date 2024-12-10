@@ -51,8 +51,8 @@ void ProgressTab::render() {
 
 	const auto& bounds = Bounds(
 		Point(
-			bufferSize.getWidth() / 2 - size.getWidth() / 2,
-			bufferSize.getHeight() / 2 - size.getHeight() / 2
+			bufferSize.getXCenter() - size.getXCenter(),
+			bufferSize.getYCenter() - size.getYCenter()
 		),
 		size
 	);
@@ -76,27 +76,4 @@ void ProgressTab::render() {
 		&Theme::white,
 		textBuffer
 	);
-}
-
-// -------------------------------- PWMProgressTab --------------------------------
-
-
-PWMProgressTab::PWMProgressTab(const wchar_t* name, uint8_t pin, uint8_t* configValue) : ProgressTab(name, configValue), _pin(pin) {
-
-}
-
-void PWMProgressTab::setup() {
-	ProgressTab::setup();
-
-	pwm();
-}
-
-void PWMProgressTab::onRotateProcessed() {
-	ProgressTab::onRotateProcessed();
-
-	pwm();
-}
-
-void PWMProgressTab::pwm() {
-	analogWrite(_pin, 255 - *getConfigValue());
 }

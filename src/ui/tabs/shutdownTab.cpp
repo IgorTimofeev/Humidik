@@ -7,7 +7,7 @@ ShutdownTab::ShutdownTab() : TextAndSuffixTab(L"Timer"), ConfigValueTab<uint16_t
 }
 
 void ShutdownTab::setup() {
-	updateTextBuffers();
+	updateTextAndSuffixBuffers();
 }
 
 void ShutdownTab::onRotate() {
@@ -27,8 +27,9 @@ void ShutdownTab::onRotate() {
 
 	int16_t addend;
 
-	if (*getConfigValue() >= 60 && (rotation > 0 || *getConfigValue() >= 120)) {
-		addend = 60;
+	if (app.config.shutdownDelay >= 60) {
+		addend = rotation > 0 || app.config.shutdownDelay >= 120 ? 60 : 1;
+		app.config.shutdownDelay = app.config.shutdownDelay - app.config.shutdownDelay % 60;
 	}
 	else {
 		if (deltaTime < 60) {
@@ -39,15 +40,17 @@ void ShutdownTab::onRotate() {
 		}
 	}
 
-	*getConfigValue() = addSaturating(*getConfigValue(), addend * (rotation > 0 ? 1 : -1));
+	app.config.shutdownDelay = addSaturating(app.config.shutdownDelay, addend * (rotation > 0 ? 1 : -1));
+	app.updateShutdownTimeConditional();
+	app.updateFanAndAtomizerPower();
 
-	updateTextBuffers();
+	updateTextAndSuffixBuffers();
 
 	// Config
 	app.config.enqueueWrite();
 }
 
-void ShutdownTab::updateTextBuffers() {
+void ShutdownTab::updateTextAndSuffixBuffers() {
 	const auto value = *getConfigValue();
 
 	if (value == 0) {
@@ -69,4 +72,42 @@ void ShutdownTab::updateTextBuffers() {
 
 		setSuffix(_suffixBuffer);
 	}
+}
+
+void ShutdownTab::render() {
+	TextAndSuffixTab::render();
+
+//	auto& app = App::getInstance();
+//
+//	if (app.config.shutdownDelay == 0 || app.getShutdownTime() == 0)
+//		return;
+//
+//	const auto totalSeconds = (app.getShutdownTime() - millis()) / 1000;
+//	const uint8_t minutes = (totalSeconds / 60) % 60;
+//	const uint8_t seconds = totalSeconds % 60;
+//
+//	const uint8_t footerBufferLength = 12;
+//	wchar_t footerBuffer[footerBufferLength] {};
+//
+//	if (totalSeconds < 3600) {
+//		swprintf(footerBuffer, footerBufferLength, L"%02d:%02d", minutes, seconds);
+//	}
+//	else {
+//		const uint8_t hours = (totalSeconds / 3600) % 24;
+//
+//		swprintf(footerBuffer, footerBufferLength, L"%02d:%02d:%02d", hours, minutes, seconds);
+//	}
+//
+//	const auto& screenSize = app.screenBuffer.getSize();
+//	const auto& textSize = Theme::fontSmall.getSize(footerBuffer);
+//
+//	app.screenBuffer.renderText(
+//		Point(
+//			screenSize.getXCenter() - textSize.getXCenter(),
+//			screenSize.getHeight() - textSize.getHeight()
+//		),
+//		&Theme::fontSmall,
+//		&Theme::white,
+//		footerBuffer
+//	);
 }

@@ -14,8 +14,8 @@ void TextAndSuffixTab::render() {
 	const uint8_t marginTop = 5;
 
 	Point position = Point(
-		app.screenBuffer.getSize().getWidth() / 2 - bigSize.getWidth() / 2,
-		marginTop + (app.screenBuffer.getSize().getHeight() - marginTop) / 2 - bigSize.getHeight() / 2
+		app.screenBuffer.getSize().getXCenter() - bigSize.getXCenter(),
+		marginTop + (app.screenBuffer.getSize().getHeight() - marginTop) / 2 - bigSize.getYCenter()
 	);
 
 	app.screenBuffer.renderText(position, &Theme::fontBig, &Theme::white, _text);

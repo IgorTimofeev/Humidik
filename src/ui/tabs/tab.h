@@ -13,7 +13,6 @@ class Tab {
 		virtual ~Tab() = default;
 
 		virtual void setup();
-		virtual void tick();
 		virtual void render() = 0;
 		virtual void onRotate();
 		virtual void onRotateProcessed();

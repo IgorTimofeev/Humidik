@@ -8,15 +8,11 @@ InfoTab::InfoTab() : Tab(L"Info") {
 	wcscpy(_temperatureSuffixBuffer, L"°C");
 }
 
-void InfoTab::tick() {
+void InfoTab::render() {
 	auto& app = App::getInstance();
 
 	swprintf(_humidityTextBuffer, 6, L"%.0f", app.getHumidity());
 	swprintf(_temperatureTextBuffer, 6, L"%.0f", app.getTemperature());
-}
-
-void InfoTab::render() {
-	auto& app = App::getInstance();
 
 	const auto renderPizda = [](const Bounds& bounds, int8_t marginLeft, wchar_t* text, wchar_t* suffix) {
 		auto& app = App::getInstance();
@@ -26,8 +22,8 @@ void InfoTab::render() {
 		const auto& bigSize = Theme::fontBig.getSize(text);
 
 		Point position = Point(
-			bounds.getXCenter() - bigSize.getWidth() / 2 + marginLeft,
-			bounds.getYCenter() - bigSize.getHeight() / 2
+			bounds.getXCenter() - bigSize.getXCenter() + marginLeft,
+			bounds.getYCenter() - bigSize.getYCenter()
 		);
 
 		app.screenBuffer.renderText(position, &Theme::fontBig, &Theme::white, text);
@@ -40,7 +36,7 @@ void InfoTab::render() {
 
 	const uint8_t marginTop = 5;
 	const uint8_t marginLine = 15;
-	const uint8_t halfWidth = app.screenBuffer.getSize().getWidth() / 2;
+	const uint8_t halfWidth = app.screenBuffer.getSize().getXCenter();
 
 	// Left
 	Bounds bounds = Bounds(

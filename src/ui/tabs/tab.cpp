@@ -9,10 +9,6 @@ void Tab::setup() {
 
 }
 
-void Tab::tick() {
-
-}
-
 const wchar_t* Tab::getName() const {
 	return _name;
 }

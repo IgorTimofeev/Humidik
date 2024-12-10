@@ -8,7 +8,6 @@
 class InfoTab : public Tab {
 	public:
 		InfoTab();
-		void tick() override;
 		void render() override;
 
 	private:

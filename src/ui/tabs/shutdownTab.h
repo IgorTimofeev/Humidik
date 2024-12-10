@@ -8,10 +8,11 @@ class ShutdownTab : public TextAndSuffixTab, public ConfigValueTab<uint16_t> {
 		explicit ShutdownTab();
 
 		void onRotate() override;
-
 		void setup() override;
 
-		void updateTextBuffers();
+		void updateTextAndSuffixBuffers();
+
+		void render() override;
 
 	private:
 		uint32_t _lastRotation = 0;

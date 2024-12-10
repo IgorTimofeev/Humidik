@@ -38,10 +38,24 @@ class App {
 		float getTemperature() const;
 		float getHumidity() const;
 
+		void updateFanPower();
+		void updateAtomizerPower();
+		void updateFanAndAtomizerPower();
+
+		uint32_t getShutdownTime() const;
+		void updateShutdownTimeConditional();
+
 	private:
 		float _temperature = 0;
 		float _humidity = 0;
 		uint32_t _sensorsTickDeadline = 0;
 
+		uint32_t _shutdownTime = 0;
+		bool _shutdownState = false;
+
 		void readSensors();
+
+		void analogWriteToDevice(uint8_t pin, uint8_t value) const;
+
+		void updateShutdownTime();
 };

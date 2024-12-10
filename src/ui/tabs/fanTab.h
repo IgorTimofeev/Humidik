@@ -3,7 +3,9 @@
 #include <cstdint>
 #include "progressTab.h"
 
-class FanTab : public PWMProgressTab {
+class FanTab : public ProgressTab {
 	public:
 		explicit FanTab();
+
+		void onRotateProcessed() override;
 };

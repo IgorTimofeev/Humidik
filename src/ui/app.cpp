@@ -1,5 +1,6 @@
 #include "app.h"
 #include "EEPROM.h"
+#include "../../lib/YOBA/src/number.h"
 
 App& App::getInstance() {
 	static App instance;
@@ -11,29 +12,85 @@ void App::setup() {
 	// Config
 	config.read();
 
-	// Fan
+	// GPIO
 	pinMode(constants::pinout::fan, OUTPUT);
+	pinMode(constants::pinout::atomizer, OUTPUT);
+
 	analogWriteFrequency(5000);
 	analogWriteResolution(8);
-
-//	ledcSetup(0, 312500, 8);
-//	ledcAttachPin(settings::pinout::fan, 0);
 
 	// Encoder
 	encoder.setup();
 
-	// Display
+	// Screen
 	screenBuffer.setup();
 
-	// Menu
+	// UI
 	menu.setup();
+
+	updateShutdownTimeConditional();
+	updateFanAndAtomizerPower();
 }
 
 void App::tick() {
-	menu.tick();
-	config.tick();
-
 	readSensors();
+
+	screenBuffer.clear(&Theme::black);
+
+	menu.render();
+
+	// Shutdown timer
+	if (config.shutdownDelay > 0) {
+		if (encoder.wasInterrupted()) {
+			encoder.acknowledgeInterrupt();
+
+			_shutdownState = false;
+			updateShutdownTime();
+			updateFanAndAtomizerPower();
+		}
+		else {
+			if (millis() >= _shutdownTime) {
+				_shutdownState = true;
+				_shutdownTime = 0;
+
+				updateFanAndAtomizerPower();
+			}
+		}
+	}
+
+	screenBuffer.flush();
+
+	config.tick();
+}
+
+void App::updateShutdownTime() {
+	_shutdownTime = millis() + config.shutdownDelay * 60000;
+}
+
+void App::updateShutdownTimeConditional() {
+	if (config.shutdownDelay > 0) {
+		updateShutdownTime();
+	}
+	else {
+		_shutdownTime = 0;
+	}
+}
+
+void App::analogWriteToDevice(uint8_t pin, uint8_t value) const {
+	analogWrite(pin, _shutdownState ? 0xFF : 0xFF - value);
+}
+
+void App::updateFanPower() {
+	analogWriteToDevice(constants::pinout::fan, config.fanPower);
+}
+
+void App::updateAtomizerPower() {
+	analogWriteToDevice(constants::pinout::atomizer, config.atomizerPower);
+}
+
+void App::updateFanAndAtomizerPower() {
+	updateFanPower();
+	updateAtomizerPower();
 }
 
 void App::readSensors() {
@@ -52,4 +109,8 @@ float App::getTemperature() const {
 
 float App::getHumidity() const {
 	return _humidity;
+}
+
+uint32_t App::getShutdownTime() const {
+	return _shutdownTime;
 }

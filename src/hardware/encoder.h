@@ -37,8 +37,12 @@ class Encoder {
 			encoder->_interrupted = true;
 		}
 
-		bool isInterrupted() const {
+		bool wasInterrupted() const {
 			return _interrupted;
+		}
+
+		void acknowledgeInterrupt() {
+			_interrupted = false;
 		}
 
 		bool isPressed() const {

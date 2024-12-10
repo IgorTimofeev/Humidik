@@ -35,7 +35,7 @@ void Menu::setup() {
 	addTab(new ThemeTab());
 }
 
-void Menu::tick() {
+void Menu::render() {
 	auto& app = App::getInstance();
 
 	auto selectedTab = _tabs[app.config.ui.tabIndex];
@@ -75,11 +75,9 @@ void Menu::tick() {
 	_oldPressed = app.encoder.isPressed();
 
 	// Rendering UI
-	app.screenBuffer.clear(&Theme::black);
-
 	const auto textSize = Theme::fontSmall.getSize(selectedTab->getName());
 
-	int32_t textX = app.screenBuffer.getSize().getWidth() / 2 - textSize.getWidth() / 2;
+	int32_t textX = app.screenBuffer.getSize().getXCenter() - textSize.getXCenter();
 	int32_t textY = 2;
 
 	// Border around selected tab
@@ -109,7 +107,7 @@ void Menu::tick() {
 	const uint8_t dotOffset = 3;
 
 	int32_t x = textX - dotOffset;
-	int32_t y = textY + textSize.getHeight() / 2;
+	int32_t y = textY + textSize.getYCenter();
 
 	// Left dots
 	for (int32_t i = app.config.ui.tabIndex - 1; i >= 0; i--) {
@@ -126,9 +124,5 @@ void Menu::tick() {
 	}
 
 	// Tab content
-	selectedTab->tick();
 	selectedTab->render();
-
-	// Cyka!
-	app.screenBuffer.flush();
 }
