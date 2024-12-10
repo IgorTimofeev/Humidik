@@ -16,9 +16,6 @@ void App::setup() {
 	pinMode(constants::pinout::fan, OUTPUT);
 	pinMode(constants::pinout::atomizer, OUTPUT);
 
-	analogWriteFrequency(5000);
-	analogWriteResolution(8);
-
 	// Encoder
 	encoder.setup();
 
@@ -44,9 +41,12 @@ void App::tick() {
 		if (encoder.wasInterrupted()) {
 			encoder.acknowledgeInterrupt();
 
-			_shutdownState = false;
 			updateShutdownTime();
-			updateFanAndAtomizerPower();
+
+			if (_shutdownState) {
+				_shutdownState = false;
+				updateFanAndAtomizerPower();
+			}
 		}
 		else {
 			if (millis() >= _shutdownTime) {
@@ -77,6 +77,8 @@ void App::updateShutdownTimeConditional() {
 }
 
 void App::analogWriteToDevice(uint8_t pin, uint8_t value) const {
+	analogWriteFrequency(16000);
+	analogWriteResolution(8);
 	analogWrite(pin, _shutdownState ? 0xFF : 0xFF - value);
 }
 
