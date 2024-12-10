@@ -1,15 +1,7 @@
 #pragma once
 
-#include "ui/tabs/tab.h"
-#include "ui/tabs/infoTab.h"
-#include "ui/tabs/colorTabs.h"
-#include "ui/tabs/fanTab.h"
-#include "ui/tabs/atomizerTab.h"
-#include "ui/tabs/contrastTab.h"
-#include "ui/tabs/themeTab.h"
-#include "ui/tabs/shutdownTab.h"
-#include "ui/tabs/targetHumidityTab.h"
 #include "vector"
+#include "ui/tabs/tab.h"
 #include <cstdint>
 #include <functional>
 
