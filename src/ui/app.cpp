@@ -1,5 +1,6 @@
 #include "app.h"
 #include "EEPROM.h"
+#include <Wire.h>
 #include "../../lib/YOBA/src/number.h"
 
 App& App::getInstance() {
@@ -12,18 +13,31 @@ void App::setup() {
 	// Config
 	config.read();
 
-	// GPIO
+	// Fan & atomizer
 	pinMode(constants::pinout::fan, OUTPUT);
 	pinMode(constants::pinout::atomizer, OUTPUT);
 
 	// Encoder
 	encoder.setup();
 
+	// Configuring deep sleep interrupt wakeup source
+	// It will check for human-to-encoder interactions in this case
+	esp_sleep_enable_ext1_wakeup(
+		1 << constants::pinout::encoder::sw
+//		| 1 << constants::pinout::encoder::dt
+//		| 1 << constants::pinout::encoder::clk
+		,
+		ESP_EXT1_WAKEUP_ALL_LOW
+	);
+
 	// Screen
 	screenBuffer.setup();
 
 	// UI
 	menu.setup();
+
+	// Temperature & humidity sensor
+	_dht.setup(constants::pinout::temperatureAndHumiditySensor, DHTesp::DHT22);
 
 	updateShutdownTimeConditional();
 	updateFanAndAtomizerPower();
@@ -42,18 +56,10 @@ void App::tick() {
 			encoder.acknowledgeInterrupt();
 
 			updateShutdownTime();
-
-			if (_shutdownState) {
-				_shutdownState = false;
-				updateFanAndAtomizerPower();
-			}
 		}
 		else {
 			if (millis() >= _shutdownTime) {
-				_shutdownState = true;
-				_shutdownTime = 0;
-
-				updateFanAndAtomizerPower();
+				esp_deep_sleep_start();
 			}
 		}
 	}
@@ -65,6 +71,7 @@ void App::tick() {
 
 void App::updateShutdownTime() {
 	_shutdownTime = millis() + config.shutdownDelay * 60000;
+//_shutdownTime = millis() + 5000;
 }
 
 void App::updateShutdownTimeConditional() {
@@ -76,33 +83,33 @@ void App::updateShutdownTimeConditional() {
 	}
 }
 
-void App::analogWriteToDevice(uint8_t pin, uint8_t value) const {
+void App::analogWriteToDevice(uint8_t pin, uint8_t value) {
 	analogWriteFrequency(16000);
 	analogWriteResolution(8);
-	analogWrite(pin, _shutdownState ? 0xFF : 0xFF - value);
+	analogWrite(pin, 0xFF - value);
 }
 
-void App::updateFanPower() {
+void App::updateFanPower() const {
 	analogWriteToDevice(constants::pinout::fan, config.fanPower);
 }
 
-void App::updateAtomizerPower() {
+void App::updateAtomizerPower() const {
 	analogWriteToDevice(constants::pinout::atomizer, config.atomizerPower);
 }
 
-void App::updateFanAndAtomizerPower() {
+void App::updateFanAndAtomizerPower() const {
 	updateFanPower();
 	updateAtomizerPower();
 }
 
 void App::readSensors() {
-	if (millis() < _sensorsTickDeadline)
+	if (millis() < _sensorsTickTime)
 		return;
 
-	_humidity = (float) random(40, 50);
-	_temperature = (float) random(24, 30);
+	_humidity = _dht.getHumidity();
+	_temperature = _dht.getTemperature();
 
-	_sensorsTickDeadline = millis() + 1000;
+	_sensorsTickTime = millis() + _dht.getMinimumSamplingPeriod();
 }
 
 float App::getTemperature() const {

@@ -1,5 +1,6 @@
 #pragma once
 
+#include "DHTesp.h"
 #include <SPI.h>
 #include "../hardware/encoder.h"
 #include "../../lib/YOBA/src/hardware/screen/drivers/SH1106Driver.h"
@@ -38,9 +39,9 @@ class App {
 		float getTemperature() const;
 		float getHumidity() const;
 
-		void updateFanPower();
-		void updateAtomizerPower();
-		void updateFanAndAtomizerPower();
+		void updateFanPower() const;
+		void updateAtomizerPower() const;
+		void updateFanAndAtomizerPower() const;
 
 		uint32_t getShutdownTime() const;
 		void updateShutdownTimeConditional();
@@ -48,14 +49,15 @@ class App {
 	private:
 		float _temperature = 0;
 		float _humidity = 0;
-		uint32_t _sensorsTickDeadline = 0;
+		uint32_t _sensorsTickTime = 0;
 
 		uint32_t _shutdownTime = 0;
-		bool _shutdownState = false;
+
+		DHTesp  _dht = DHTesp ();
 
 		void readSensors();
 
-		void analogWriteToDevice(uint8_t pin, uint8_t value) const;
+		static void analogWriteToDevice(uint8_t pin, uint8_t value) ;
 
 		void updateShutdownTime();
 };

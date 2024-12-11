@@ -6,8 +6,8 @@ namespace constants {
 	namespace pinout {
 		namespace encoder {
 			const uint8_t clk = 22;
-			const uint8_t dt = 4;
-			const uint8_t sw = 21;
+			const uint8_t dt = 21;
+			const uint8_t sw = 4;
 		}
 
 		namespace screen {
@@ -18,5 +18,10 @@ namespace constants {
 
 		const uint8_t fan = 19;
 		const uint8_t atomizer = 33;
+		const uint8_t temperatureAndHumiditySensor = 15;
+	}
+
+	namespace ui {
+		const uint8_t marginTop = 5;
 	}
 }
