@@ -10,6 +10,8 @@ App& App::getInstance() {
 }
 
 void App::setup() {
+	Serial.begin(115200);
+
 	// Config
 	config.read();
 
@@ -37,36 +39,24 @@ void App::setup() {
 	menu.setup();
 
 	// Temperature & humidity sensor
-	_dht.setup(constants::pinout::temperatureAndHumiditySensor, DHTesp::DHT22);
+	atmosphericSensor.setup(constants::pinout::atmosphericSensor, DHTesp::DHT22);
 
-	updateShutdownTimeConditional();
 	updateFanAndAtomizerPower();
+	updateShutdownTimeIfTimerEnabled();
 }
 
 void App::tick() {
-	readSensors();
-
 	screenBuffer.clear(&Theme::black);
-
 	menu.render();
-
-	// Shutdown timer
-	if (config.shutdownDelay > 0) {
-		if (encoder.wasInterrupted()) {
-			encoder.acknowledgeInterrupt();
-
-			updateShutdownTime();
-		}
-		else {
-			if (millis() >= _shutdownTime) {
-				esp_deep_sleep_start();
-			}
-		}
-	}
-
 	screenBuffer.flush();
-
 	config.tick();
+
+	readAtmosphericSensor();
+	checkTargetHumidity();
+	checkShutdownTime();
+
+	// 30 FPS should be enough
+	delay(1000 / 30);
 }
 
 void App::updateShutdownTime() {
@@ -74,7 +64,7 @@ void App::updateShutdownTime() {
 //_shutdownTime = millis() + 5000;
 }
 
-void App::updateShutdownTimeConditional() {
+void App::updateShutdownTimeIfTimerEnabled() {
 	if (config.shutdownDelay > 0) {
 		updateShutdownTime();
 	}
@@ -83,33 +73,69 @@ void App::updateShutdownTimeConditional() {
 	}
 }
 
-void App::analogWriteToDevice(uint8_t pin, uint8_t value) {
+void App::setFanOrAtomizerPower(uint8_t pin, uint8_t value) const {
 	analogWriteFrequency(16000);
 	analogWriteResolution(8);
-	analogWrite(pin, 0xFF - value);
+	analogWrite(pin, _targetHumidityReached ? 0xFF : 0xFF - value);
 }
 
-void App::updateFanPower() const {
-	analogWriteToDevice(constants::pinout::fan, config.fanPower);
+void App::updateFanPower() {
+	setFanOrAtomizerPower(constants::pinout::fan, config.fanPower);
 }
 
-void App::updateAtomizerPower() const {
-	analogWriteToDevice(constants::pinout::atomizer, config.atomizerPower);
+void App::updateAtomizerPower() {
+	setFanOrAtomizerPower(constants::pinout::atomizer, config.atomizerPower);
 }
 
-void App::updateFanAndAtomizerPower() const {
+void App::updateFanAndAtomizerPower() {
 	updateFanPower();
 	updateAtomizerPower();
 }
 
-void App::readSensors() {
-	if (millis() < _sensorsTickTime)
+void App::checkTargetHumidity() {
+	if (!isAtmosphericDataAvailable())
 		return;
 
-	_humidity = _dht.getHumidity();
-	_temperature = _dht.getTemperature();
+	if (_targetHumidityReached) {
+		if ((uint8_t) _humidity < config.targetHumidity) {
+			_targetHumidityReached = false;
+			updateFanAndAtomizerPower();
+		}
+	}
+	else {
+		if ((uint8_t) _humidity >= config.targetHumidity + constants::targetHumidityThreshold) {
+			_targetHumidityReached = true;
+			updateFanAndAtomizerPower();
+		}
+	}
+}
 
-	_sensorsTickTime = millis() + _dht.getMinimumSamplingPeriod();
+void App::checkShutdownTime() {
+	if (config.shutdownDelay == 0)
+		return;
+
+	if (encoder.wasInterrupted()) {
+		encoder.acknowledgeInterrupt();
+
+		updateShutdownTime();
+	}
+	else {
+		if (millis() >= _shutdownTime) {
+			esp_deep_sleep_start();
+		}
+	}
+}
+
+void App::readAtmosphericSensor() {
+	if (millis() < _atmosphericSensorTickTime)
+		return;
+
+	_humidity = atmosphericSensor.getHumidity();
+	_temperature = atmosphericSensor.getTemperature();
+
+//	Serial.printf("Humi, temp: %f, %f\n", _humidity, _temperature);
+
+	_atmosphericSensorTickTime = millis() + atmosphericSensor.getMinimumSamplingPeriod();
 }
 
 float App::getTemperature() const {
@@ -122,4 +148,8 @@ float App::getHumidity() const {
 
 uint32_t App::getShutdownTime() const {
 	return _shutdownTime;
+}
+
+bool App::isAtmosphericDataAvailable() const {
+	return !isnan(_humidity) && !isnan(_temperature);
 }

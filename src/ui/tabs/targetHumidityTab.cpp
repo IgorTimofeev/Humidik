@@ -46,7 +46,5 @@ void TargetHumidityTab::onRotate() {
 }
 
 void TargetHumidityTab::updateTextBuffers() {
-	const auto value = *getConfigValue();
-
-	swprintf(_textBuffer, 4, L"%d", value);
+	swprintf(_textBuffer, 4, L"%d", *getConfigValue());
 }

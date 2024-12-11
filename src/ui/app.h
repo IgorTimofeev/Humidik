@@ -14,6 +14,8 @@ using namespace yoba;
 
 class App {
 	public:
+		static const uint8_t marginTop = 5;
+
 		Config config = Config();
 
 		Encoder encoder = Encoder(
@@ -32,6 +34,8 @@ class App {
 
 		Menu menu = Menu();
 
+		DHTesp atmosphericSensor = DHTesp();
+
 		static App& getInstance();
 
 		void setup();
@@ -39,25 +43,25 @@ class App {
 		float getTemperature() const;
 		float getHumidity() const;
 
-		void updateFanPower() const;
-		void updateAtomizerPower() const;
-		void updateFanAndAtomizerPower() const;
+		void updateFanPower();
+		void updateAtomizerPower();
 
 		uint32_t getShutdownTime() const;
-		void updateShutdownTimeConditional();
+		void updateShutdownTimeIfTimerEnabled();
+
+		bool isAtmosphericDataAvailable() const;
 
 	private:
-		float _temperature = 0;
-		float _humidity = 0;
-		uint32_t _sensorsTickTime = 0;
-
+		float _temperature = NAN;
+		float _humidity = NAN;
+		bool _targetHumidityReached = false;
+		uint32_t _atmosphericSensorTickTime = 0;
 		uint32_t _shutdownTime = 0;
 
-		DHTesp  _dht = DHTesp ();
-
-		void readSensors();
-
-		static void analogWriteToDevice(uint8_t pin, uint8_t value) ;
-
+		void setFanOrAtomizerPower(uint8_t pin, uint8_t value) const ;
+		void readAtmosphericSensor();
 		void updateShutdownTime();
+		void checkTargetHumidity();
+		void checkShutdownTime();
+		void updateFanAndAtomizerPower();
 };

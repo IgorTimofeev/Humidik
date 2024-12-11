@@ -18,10 +18,8 @@ namespace constants {
 
 		const uint8_t fan = 19;
 		const uint8_t atomizer = 33;
-		const uint8_t temperatureAndHumiditySensor = 15;
+		const uint8_t atmosphericSensor = 15;
 	}
 
-	namespace ui {
-		const uint8_t marginTop = 5;
-	}
+	const uint8_t targetHumidityThreshold = 5;
 }

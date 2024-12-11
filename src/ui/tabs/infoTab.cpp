@@ -12,21 +12,7 @@ void InfoTab::render() {
 	auto& app = App::getInstance();
 	const auto& screenSize = app.screenBuffer.getSize();
 
-	if (isnan(app.getHumidity()) || isnan(app.getTemperature())) {
-		const auto& text = L":(";
-		const auto& textSize = Theme::fontBig.getSize(text);
-
-		app.screenBuffer.renderText(
-			Point(
-				screenSize.getXCenter() - textSize.getXCenter(),
-				constants::ui::marginTop + (screenSize.getHeight() - constants::ui::marginTop) / 2 - textSize.getYCenter()
-			),
-			&Theme::fontBig,
-			&Theme::white,
-			text
-		);
-	}
-	else {
+	if (app.isAtmosphericDataAvailable()) {
 		const uint8_t marginLine = 15;
 		const uint8_t halfWidth = screenSize.getXCenter();
 
@@ -48,25 +34,24 @@ void InfoTab::render() {
 			app.screenBuffer.renderText(position, &Theme::fontBig, &Theme::white, text);
 
 			position.setX(position.getX() + bigSize.getWidth() + 2);
-			position.setY(position.getY() + bigSize.getHeight() -  Theme::fontSmall.getHeight() - 4);
+			position.setY(position.getY() + bigSize.getHeight() - Theme::fontSmall.getHeight() - 4);
 
 			app.screenBuffer.renderText(position, &Theme::fontSmall, &Theme::white, suffix);
 		};
 
-
 		// Left
 		auto bounds = Bounds(
 			0,
-			constants::ui::marginTop,
+			App::marginTop,
 			halfWidth,
-			screenSize.getHeight() - constants::ui::marginTop
+			screenSize.getHeight() - App::marginTop
 		);
 
 		renderPizda(bounds, -1, _humidityTextBuffer, _humiditySuffixBuffer);
 
 		// Line
 		app.screenBuffer.renderVerticalLine(
-			Point(halfWidth, constants::ui::marginTop + marginLine),
+			Point(halfWidth, App::marginTop + marginLine),
 			bounds.getHeight() - marginLine * 2,
 			&Theme::white
 		);
@@ -74,5 +59,19 @@ void InfoTab::render() {
 		// Right
 		bounds.setX(bounds.getX() + bounds.getWidth());
 		renderPizda(bounds, -4, _temperatureTextBuffer, _temperatureSuffixBuffer);
+	}
+	else {
+		const auto& text = L"IRS ALIGN";
+		const auto& textSize = Theme::fontBig.getSize(text);
+
+		app.screenBuffer.renderText(
+			Point(
+				screenSize.getXCenter() - textSize.getXCenter(),
+				App::marginTop + (screenSize.getHeight() - App::marginTop) / 2 - textSize.getYCenter()
+			),
+			&Theme::fontBig,
+			&Theme::white,
+			text
+		);
 	}
 }

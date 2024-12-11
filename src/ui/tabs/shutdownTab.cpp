@@ -41,8 +41,7 @@ void ShutdownTab::onRotate() {
 	}
 
 	app.config.shutdownDelay = addSaturating(app.config.shutdownDelay, addend * (rotation > 0 ? 1 : -1));
-	app.updateShutdownTimeConditional();
-	app.updateFanAndAtomizerPower();
+	app.updateShutdownTimeIfTimerEnabled();
 
 	updateTextAndSuffixBuffers();
 
