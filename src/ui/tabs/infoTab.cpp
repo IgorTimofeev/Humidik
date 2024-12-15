@@ -61,17 +61,6 @@ void InfoTab::render() {
 		renderPizda(bounds, -4, _temperatureTextBuffer, _temperatureSuffixBuffer);
 	}
 	else {
-		const auto& text = L"IRS ALIGN";
-		const auto& textSize = Theme::fontBig.getSize(text);
-
-		app.screenBuffer.renderText(
-			Point(
-				screenSize.getXCenter() - textSize.getXCenter(),
-				App::marginTop + (screenSize.getHeight() - App::marginTop) / 2 - textSize.getYCenter()
-			),
-			&Theme::fontBig,
-			&Theme::white,
-			text
-		);
+		renderCenteredText(&Theme::fontMedium, L"IRS ALIGN");
 	}
 }

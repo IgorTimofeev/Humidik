@@ -1,6 +1,6 @@
-﻿class BigFont : public yoba::Font {
+﻿class Arial26Font : public yoba::Font {
 	public:
-		BigFont() : yoba::Font(
+		Arial26Font() : yoba::Font(
 			32,
 			126,
 			32,

@@ -1,6 +1,9 @@
 #pragma once
 
 #include <cstdint>
+#include "../../../lib/YOBA/src/font.h"
+
+using namespace yoba;
 
 class App;
 
@@ -19,6 +22,9 @@ class Tab {
 		const wchar_t* getName() const;
 		bool isFocusable() const;
 		void setFocusable(bool selectable);
+
+	protected:
+		static void renderCenteredText(const Font* font, const wchar_t* text);
 
 	private:
 		const wchar_t* _name;

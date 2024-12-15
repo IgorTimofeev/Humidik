@@ -53,28 +53,29 @@ void ShutdownTab::updateTextAndSuffixBuffers() {
 	const auto value = *getConfigValue();
 
 	if (value == 0) {
-		wcscpy(_textBuffer, L"Disable");
+		return;
+	}
+	else if (value >= 60) {
+		swprintf(_textBuffer, 16, L"%d", value / 60);
 
-		setSuffix(nullptr);
+		wcscpy(_suffixBuffer, L"h");
 	}
 	else {
-		if (value >= 60) {
-			swprintf(_textBuffer, 16, L"%d", value / 60);
+		swprintf(_textBuffer, 16, L"%d", value);
 
-			wcscpy(_suffixBuffer, L"h");
-		}
-		else {
-			swprintf(_textBuffer, 16, L"%d", value);
-
-			wcscpy(_suffixBuffer, L"min");
-		}
-
-		setSuffix(_suffixBuffer);
+		wcscpy(_suffixBuffer, L"min");
 	}
+
+	setSuffix(_suffixBuffer);
 }
 
 void ShutdownTab::render() {
-	TextAndSuffixTab::render();
+	if (*getConfigValue() == 0) {
+		renderCenteredText(&Theme::fontMedium, L"Disable");
+	}
+	else {
+		TextAndSuffixTab::render();
+	}
 
 //	auto& app = App::getInstance();
 //

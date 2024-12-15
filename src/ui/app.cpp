@@ -97,13 +97,13 @@ void App::checkTargetHumidity() {
 		return;
 
 	if (_targetHumidityReached) {
-		if ((uint8_t) _humidity < config.targetHumidity) {
+		if (_humidity < (float) config.targetHumidity) {
 			_targetHumidityReached = false;
 			updateFanAndAtomizerPower();
 		}
 	}
 	else {
-		if ((uint8_t) _humidity >= config.targetHumidity + constants::targetHumidityThreshold) {
+		if (_humidity >= (float) (config.targetHumidity + constants::targetHumidityThreshold)) {
 			_targetHumidityReached = true;
 			updateFanAndAtomizerPower();
 		}
