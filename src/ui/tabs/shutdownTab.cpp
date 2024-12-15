@@ -71,7 +71,7 @@ void ShutdownTab::updateTextAndSuffixBuffers() {
 
 void ShutdownTab::render() {
 	if (*getConfigValue() == 0) {
-		renderCenteredText(&Theme::fontMedium, L"Disable");
+		renderCenteredText(&Theme::fontBig, L"Disable");
 	}
 	else {
 		TextAndSuffixTab::render();

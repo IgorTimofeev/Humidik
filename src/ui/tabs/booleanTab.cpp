@@ -12,7 +12,7 @@ BooleanTab::BooleanTab(const wchar_t* name, const wchar_t* trueText, const wchar
 }
 
 void BooleanTab::render() {
-	renderCenteredText(&Theme::fontMedium, *getConfigValue() ? _trueText : _falseText);
+	renderCenteredText(&Theme::fontBig, *getConfigValue() ? _trueText : _falseText);
 }
 
 void BooleanTab::onRotate() {
